@@ -5,11 +5,12 @@ public class FileManage {
 
 
     public static openedFile[] openedFileList;
-    public static class openedFile{
 
+    public static int getOpenedFileListLength() {
+        return openedFileList.length;
     }
 
-    public static boolean CreateFile(String filename,int fileAttribute)
+    public static boolean CreateFile(String filename, int fileAttribute)
     {
         return true;
     }

@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        DiskManage.init(256);
+        DiskManage.init(64*128);
         File file=new File("Disk");
         DiskManage.volume(file);
     }
