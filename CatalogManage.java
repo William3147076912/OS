@@ -1,4 +1,5 @@
 public class CatalogManage {
+    public static Catalog currentCatalog;
 
     public static boolean MakeDir(String dirName)
     {
