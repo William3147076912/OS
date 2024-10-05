@@ -1,3 +1,5 @@
+package com.scau.cfd;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -6,7 +8,7 @@ public class Main {
     byte[] buffer2;
 
     public static void main(String[] args) {
-//        Disk disk=new Disk(new File("Disk"));
+//        com.scau.cfd.Disk disk=new com.scau.cfd.Disk(new File("com.scau.cfd.Disk"));
 //        System.out.printf(String.valueOf(disk.getVolume()));
 //        disk.format();
         System.out.println("开机默认当前目录为主目录");

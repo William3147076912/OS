@@ -1,5 +1,7 @@
-public class openedFile{
-    char[] path=new char[20];
+package com.scau.cfd;
+
+public class openedFile {
+    char[] path = new char[20];
     char attribute;
     int number;
     int length;
