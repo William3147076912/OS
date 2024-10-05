@@ -1,11 +1,10 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import jdk.jfr.Unsigned;
+
+import java.io.*;
 
 public class Disk {
     private long volume;
-    private File file;
+    File file;
 
     public Disk(File file) {
         if (file.exists()) {
@@ -40,11 +39,11 @@ public class Disk {
             e.printStackTrace();
         }
     }
-    public static void setVolume(String filename, int volume) {
+    public static void setVolume(File file, int volume) {
 
         byte[] hello = {48};
         try (
-                FileOutputStream fos = new FileOutputStream("Disk")) {
+                FileOutputStream fos = new FileOutputStream(file)) {
             for (int i = 0; i < volume; i++) {
                 fos.write(hello);
             }
@@ -52,5 +51,24 @@ public class Disk {
                 IOException e) {
             e.printStackTrace();
         }
+    }
+    public byte findEmpty()
+    {
+        byte[] one =new byte[1];
+        try {
+            RandomAccessFile file=new RandomAccessFile(this.file,"rw");
+            for ( int i=3;i<128;i++)
+            {
+                file.seek(i);
+                file.read(one,0,1);
+                if(one[0]==(byte)0)
+                {
+                    return (byte) i;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
     }
 }
