@@ -30,7 +30,6 @@ public class Main {
             boolean exit=false;
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
-            System.out.println(input);
             String[] command = input.split(" ");
             if (Objects.equals(command[0], "exit")) break;
             switch (command[0]) {
@@ -50,7 +49,10 @@ public class Main {
                         System.out.println("error");
                         break;
                     }
-                    CatalogManage.RemoveDir(command[1]);
+                    if(!CatalogManage.RemoveDir(command[1]))
+                    {
+                        System.out.println("error");
+                    }
                     break;
                 case "format":
                     disk.format();

@@ -11,14 +11,23 @@ public class CatalogManage {
 
     public static boolean MakeDir(String dirName) throws IOException {
         boolean finded=false;
-        byte[] item=new byte[8];
+        byte[] item=new byte[3];
         RandomAccessFile file=new RandomAccessFile(Main.disk.file,"rw");
-        file.seek(currentCatalog.location);
         for (int i=0;i<8;i++)
         {
-            file.seek(currentCatalog.location+i*8);
-            file.read(item,0,8);
-            if(item[0]!='$')
+            file.seek(currentCatalog.location*64+i*8);
+            file.read(item);
+            if(dirName.equals(new String(item,StandardCharsets.US_ASCII)))
+            {
+                System.out.println("the dir has existed");
+                return false;
+            }
+        }
+        for (int i=0;i<8;i++)
+        {
+            file.seek(currentCatalog.location*64+i*8);
+            file.read(item,0,3);
+            if(item[0]=='$')
             {
                 finded=true;
 //                新建子目录并且改变文件分配表
@@ -49,6 +58,7 @@ public class CatalogManage {
             }
 
         }
+        file.close();
         return finded;
     }
     public static boolean ShowDir() throws IOException {
@@ -63,9 +73,11 @@ public class CatalogManage {
                 System.out.println( new String(item, StandardCharsets.US_ASCII));
             }
         }
+        file.close();
         return true;
     }
     public static boolean RemoveDir(String dirName) throws IOException {
+        boolean finded=false;
         byte[] item=new byte[3];
         byte[] location=new byte[1];
         RandomAccessFile file=new RandomAccessFile(Main.disk.file,"rw");
@@ -81,9 +93,11 @@ public class CatalogManage {
                 file.read(location);
                 file.seek(location[0]);
                 file.write(0);
+                finded=true;
             }
 
         }
-        return true;
+        file.close();
+        return finded;
     }
 }

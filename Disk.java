@@ -66,9 +66,11 @@ public class Disk {
                     return (byte) i;
                 }
             }
+            file.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         return 0;
     }
 }
