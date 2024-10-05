@@ -75,9 +75,12 @@ public class CatalogManage {
             file.read(item,0,3);
             if(dirName.equals(new String(item,StandardCharsets.US_ASCII)))
             {
+                file.seek(currentCatalog.location*64+i*8);
+                file.write('$');
                 file.seek(currentCatalog.location*64+i*8+6);
                 file.read(location);
-                
+                file.seek(location[0]);
+                file.write(0);
             }
 
         }
