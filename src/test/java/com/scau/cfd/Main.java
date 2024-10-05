@@ -1,5 +1,7 @@
 package com.scau.cfd;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -58,5 +60,16 @@ public class Main {
             }
             if (exit) break;
         }
+    }
+
+    @Test
+    public void test() {
+        System.out.println(new OFT().isFull());
+    }
+
+    @Test
+    public void myTest() {
+
+        new Disk(new File("Disk")).format();
     }
 }

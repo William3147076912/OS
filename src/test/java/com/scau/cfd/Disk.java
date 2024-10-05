@@ -1,14 +1,17 @@
 package com.scau.cfd;
 
+import lombok.Getter;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 
 public class Disk {
     File file;
+    @Getter
     private long volume;
 
 
@@ -36,10 +39,6 @@ public class Disk {
     }
 
 
-    public long getVolume() {
-        return volume;
-    }
-
     public void format() {
         try {
             RandomAccessFile file = new RandomAccessFile(this.file, "rw");
@@ -47,11 +46,10 @@ public class Disk {
             file.seek(0);
             byte[] buffer = new byte[128];
             file.write(buffer);
-            file.seek(128);
 
-            for (int i = 0; i < 9; i++) {
-                file.write('$');
+            for (int i = 0; i < 8; i++) {
                 file.seek(128 + i * 8);
+                file.write('$');
             }
             file.seek(0);
             file.write(new byte[]{(byte) 255, (byte) 255, (byte) 255});
