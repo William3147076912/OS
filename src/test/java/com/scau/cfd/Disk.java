@@ -1,12 +1,16 @@
 package com.scau.cfd;
 
-import jdk.jfr.Unsigned;
+import org.junit.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class Disk {
     File file;
     private long volume;
+
 
     public Disk(File file) {
         if (file.exists()) {
@@ -30,6 +34,7 @@ public class Disk {
             e.printStackTrace();
         }
     }
+
 
     public long getVolume() {
         return volume;
