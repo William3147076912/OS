@@ -6,7 +6,7 @@ public class Catalog {
     byte[] name;
     byte attribute;
     byte location;
-    Catalog[] subCatalog;
+    byte parent;
 
     public Catalog(String name) {
         this.name = new byte[3];
