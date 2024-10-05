@@ -48,6 +48,13 @@ public class Main {
                         System.out.println("error");
                     }
                     break;
+                case "cd":
+                    if (command.length < 2) {
+                        System.out.println("error");
+                        break;
+                    }
+                    CatalogManage.ChangeDirectory(command[1]);
+                    break;
                 case "format":
                     disk.format();
                     break;
