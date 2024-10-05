@@ -1,12 +1,9 @@
 package com.scau.cfd;
 
-import javax.management.openmbean.InvalidOpenTypeException;
-import javax.sound.midi.Soundbank;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class CatalogManage {
     public static Catalog currentCatalog;
@@ -30,7 +27,7 @@ public class CatalogManage {
                 finded = true;
 //                新建子目录并且改变文件分配表
                 Catalog son = new Catalog(dirName);
-                son.parent = currentCatalog.location;
+                son.parent = currentCatalog.parent;
                 son.location = Main.disk.findEmpty();
                 file.seek(son.location);
                 file.write(255);
@@ -94,5 +91,70 @@ public class CatalogManage {
         }
         file.close();
         return finded;
+    }
+    public static boolean ChangeDirectory(String dirName) throws IOException {
+        RandomAccessFile file=new RandomAccessFile(Main.disk.file,"r");
+        byte[] item=new byte[3];
+//        switch (dirName)
+//        {
+//            case "..":
+//                currentCatalog.location=currentCatalog.parent;
+//                break;
+//            case "/":
+//                currentCatalog.location=2;
+//                break;
+//            case "[^$/.]{1,3}":
+//                for (int i = 0; i < 8; i++) {
+//                    file.seek(currentCatalog.location * 64 + i * 8);
+//                    file.read(item, 0, 3);
+//                    if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
+//                        byte[] location=new byte[1];
+//                        file.seek(currentCatalog.location * 64 + i * 8 + 6);
+//                        file.read(location);
+//                        currentCatalog.location=location[0];
+//                        return true;
+//                    }
+//                }
+//                break;
+//            default:
+//                System.out.println("unknown directory");
+//                break;
+//        }
+        if(dirName.equals(".."))
+        {
+            currentCatalog.location=currentCatalog.parent;
+            for(int i=0;i<8;i++)
+            {
+                byte[] item1=new byte[8];
+                file.seek(currentCatalog.parent*64+i*8);
+                file.read(item1,0,8);
+                if(item1[0]!='$')
+                {
+                    currentCatalog.parent=item1[7];
+                    break;
+                }
+            }
+        }
+        else if (dirName.equals("/"))
+        {
+            currentCatalog.location=2;
+            currentCatalog.parent=2;
+        } else if (dirName.matches("[^$/.]{1,3}")) {
+            for (int i = 0; i < 8; i++) {
+                file.seek(currentCatalog.location * 64 + i * 8);
+                file.read(item, 0, 3);
+                if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                    byte[] location=new byte[1];
+                    file.seek(currentCatalog.location * 64 + i * 8 + 6);
+                    file.read(location);
+                    currentCatalog.parent=currentCatalog.location;
+                    currentCatalog.location=location[0];
+                    return true;
+                }
+            }
+        }else {
+            System.out.println("unknown directory");
+        }
+        return false;
     }
 }
