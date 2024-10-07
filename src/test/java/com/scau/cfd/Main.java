@@ -59,6 +59,7 @@ public class Main {
                     }
                     CatalogManage.ChangeDirectory(command[1]);
                     break;
+                //以下是文件操作
                 case "cf":
                     if(!FileManage.CreateFile(command[1],(byte) 0x04))
                     {
@@ -67,6 +68,13 @@ public class Main {
                     break;
                 case "of":
 
+                    break;
+                case "df":
+                    if (command.length < 2) {
+                        System.out.println("error");
+                        break;
+                    }
+                    FileManage.DeleteFile(command[1]);
                     break;
                 case "format":
                     disk.format();

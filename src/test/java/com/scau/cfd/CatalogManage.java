@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -76,13 +77,25 @@ public class CatalogManage {
 
     public static boolean RemoveDir(String dirName) throws IOException {
         boolean finded = false;
-        byte[] item = new byte[3];
+        boolean isEmpty= true;
+        byte[] item = new byte[8];
         byte[] location = new byte[1];
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         for (int i = 0; i < 8; i++) {
             file.seek(currentCatalog.location * 64 + i * 8);
-            file.read(item, 0, 3);
-            if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
+            file.read(item, 0, 8);
+            if (dirName.equals(new String(Arrays.copyOfRange(item,0,3), StandardCharsets.US_ASCII))) {
+                byte rmLocation=item[6];
+                for (int j=0;j<8;j++)
+                {
+                    file.seek(rmLocation*64+j*8);
+                    file.read(item);
+                    if(item[0]!=(byte) '$')
+                    {
+                        System.out.println("the dir is not empty");
+                        return false;
+                    }
+                }
                 file.seek(currentCatalog.location * 64 + i * 8);
                 file.write('$');
                 file.seek(currentCatalog.location * 64 + i * 8 + 6);

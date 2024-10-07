@@ -70,6 +70,7 @@ public class Disk {
                     return (byte) i;
                 }
             }
+            System.out.println("could not find an empty block");
             file.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
