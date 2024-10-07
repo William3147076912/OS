@@ -2,6 +2,8 @@ package com.scau.cfd;
 
 import org.junit.Test;
 
+import javax.sound.midi.Soundbank;
+import javax.xml.transform.Source;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -57,6 +59,23 @@ public class Main {
                     }
                     CatalogManage.ChangeDirectory(command[1]);
                     break;
+                //以下是文件操作
+                case "cf":
+                    if(!FileManage.CreateFile(command[1],(byte) 0x04))
+                    {
+                        System.out.println("error");
+                    }
+                    break;
+                case "of":
+
+                    break;
+                case "df":
+                    if (command.length < 2) {
+                        System.out.println("error");
+                        break;
+                    }
+                    FileManage.DeleteFile(command[1]);
+                    break;
                 case "format":
                     disk.format();
                     break;
@@ -66,6 +85,7 @@ public class Main {
                     System.out.println("unknown command");
             }
             if (exit) break;
+            System.out.println(CatalogManage.absolutePath);
         }
     }
 
