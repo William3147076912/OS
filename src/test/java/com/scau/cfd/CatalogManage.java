@@ -85,6 +85,15 @@ public class CatalogManage {
             file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             if (dirName.equals(new String(Arrays.copyOfRange(item,0,3), StandardCharsets.US_ASCII))) {
+                if((item[5]&0x04)==0x04)
+                {
+                    System.out.println("it's not a catalog");
+                    return false;
+                }else if ((item[5]&0x02)==0x02)
+                {
+                    System.out.println("fail,it belongs to system");
+                    return false;
+                }
                 byte rmLocation=item[6];
                 for (int j=0;j<8;j++)
                 {

@@ -150,6 +150,12 @@ public class FileManage {
             file.read(item, 0, 8);
             //首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                if((item[5]&0x04)!=0x04)
+                {
+                    System.out.println("failed, it's not a file or it's a system file");
+                    file.close();
+                    return false;
+                }
                 //然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (isOpened(currentFile)) {
@@ -161,16 +167,13 @@ public class FileManage {
                 file.write('$');
                 int location = item[6];
                 byte blockNum;
-                file.seek(location);
-                while (true){
+                do {
+                    file.seek(location);
                     blockNum = file.readByte();
                     file.seek(location);
                     file.write(0);
                     location = blockNum;
-                    if (location > 0)
-                        file.seek(location);
-                    else break;
-                }
+                } while (location >= 0);
                 file.close();
                 return true;
             }
@@ -180,9 +183,48 @@ public class FileManage {
         return false;
     }
 
-    public static boolean TypeFile(String filename) {
+    public static boolean TypeFile(String filename) throws IOException{
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 8);
+            //首先判断当前目录下是否有该文件
+            if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                if((item[5]&0x04)!=0x04)
+                {
+                    System.out.println("failed, it's not a file");
+                    file.close();
+                    return false;
+                }
+                //然后判断已打开文件列表中是否有已有该文件
+//                String currentFile = CatalogManage.absolutePath + filename;
+//                if (isOpened(currentFile)) {
+//                    file.close();
+//                    return false;
+//                }
+                byte[] block=new byte[64];
+                int location = item[6];
+                byte blockNum;
+                StringBuilder content= new StringBuilder();
+                do {
+                    file.seek(location);
+                    blockNum = file.readByte();
 
-        return true;
+                    file.seek(64 * location);
+                    file.read(block);
+                    content.append(new String(block, StandardCharsets.US_ASCII));
+
+                    location = blockNum;
+                } while (location >= 0);
+                System.out.println(content);
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        System.out.println("could not find the file in current catalog");
+        return false;
     }
 
     public static boolean ChangeFile(String filename) {

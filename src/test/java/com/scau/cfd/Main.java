@@ -76,6 +76,13 @@ public class Main {
                     }
                     FileManage.DeleteFile(command[1]);
                     break;
+                case "tf":
+                    if (command.length < 2) {
+                        System.out.println("error");
+                        break;
+                    }
+                    FileManage.TypeFile(command[1]);
+                    break;
                 case "format":
                     disk.format();
                     break;
