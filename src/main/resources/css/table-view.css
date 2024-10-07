@@ -1,0 +1,79 @@
+/*!* styles.css *!*/
+/*.table-view {*/
+/*    -fx-background-color: rgb(25, 25, 25, 0.8);*/
+/*    -fx-border-color: rgb(99, 99, 99);*/
+/*}*/
+
+/*!*.table-view .table-row {*!*/
+/*!*    -fx-background-color: rgb(25, 25, 25, 0.8);*!*/
+/*!*}*!*/
+
+/*.table-view .table-row-cell {*/
+/*    -fx-background-color: rgb(25, 25, 25, 0.8);*/
+/*}*/
+
+
+/* 设置 TableView 背景和边框 */
+.table-view {
+    -fx-background-color: #2E2E2E; /* 背景颜色 */
+    -fx-border-color: #444444; /* 边框颜色 */
+    -fx-border-width: 1;
+}
+
+.table-column {
+    -fx-opacity: 0.5;
+}
+
+/* 设置表头 */
+.table-view .column-header-background {
+    -fx-background-color: #3C3F41; /* 表头背景颜色 */
+}
+
+/* 设置单元格 */
+.table-view .table-row-cell {
+    -fx-background-color: #2E2E2E; /* 行背景颜色 */
+    -fx-text-fill: white; /* 行文本颜色 */
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #4A4A4A; /* 悬停时背景颜色 */
+}
+
+
+/* 设置列的文本 */
+.table-view .table-cell {
+    -fx-text-fill: white; /* 单元格文本颜色 */
+    -fx-border-color: transparent;
+}
+
+/* 隐藏滚动条按钮 */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-width: 10px;
+    -fx-pref-height: 10px;
+    -fx-opacity: 0; /* 设置透明度为 0 */
+}
+
+/* 鼠标悬浮时显示按钮 */
+.scroll-bar:hover .increment-button,
+.scroll-bar:hover .decrement-button {
+    -fx-opacity: 1; /* 鼠标悬浮时设置透明度为 1 */
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: rgb(23, 23, 23, 0.5); /* 背景色 */
+}
+
+
+.scroll-bar .thumb {
+    -fx-background-color: rgba(149, 149, 149, 0.8); /* 半透明滑块 */
+    -fx-background-radius: 5; /* 圆角 */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 4, 0, 0, 1); /* 阴影效果 */
+    -fx-pref-width: 1px; /* 滑块宽度 */
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(149, 149, 149, 1); /* 半透明滑块 */
+}
+

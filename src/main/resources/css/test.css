@@ -1,0 +1,46 @@
+/* 设置文字为白色 */
+.table-view .table-cell {
+    -fx-text-fill: white; /* 白色文字 */
+    -fx-border-color: transparent;
+}
+
+.table-cell:focused {
+    -fx-background-color: rgb(67, 67, 67, 0.8);
+}
+
+.scroll-bar {
+    -fx-background-color: rgb(23, 23, 23); /* 背景色 */
+}
+
+
+.scroll-bar .thumb {
+
+    -fx-transition: all 1s ease; /* 添加过渡效果 */
+    -fx-background-color: rgba(149, 149, 149, 0.8); /* 半透明滑块 */
+    -fx-background-radius: 5; /* 圆角 */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 4, 0, 0, 1); /* 阴影效果 */
+    -fx-pref-width: 1px; /* 滑块宽度 */
+}
+
+.scroll-bar .thumb:hover {
+    -fx-transition: all 1s ease; /* 添加过渡效果 */
+}
+
+
+/* 隐藏滚动条按钮 */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-width: 10px;
+    -fx-pref-height: 10px;
+    -fx-opacity: 0; /* 设置透明度为 0 */
+    -fx-animated: all 1s ease; /* 添加过渡效果 */
+}
+
+/* 鼠标悬浮时显示按钮 */
+.scroll-bar:hover .increment-button,
+.scroll-bar:hover .decrement-button {
+    -fx-opacity: 1; /* 鼠标悬浮时设置透明度为 1 */
+    /*-fx-pref-width: 20; !* 可选：设置按钮的宽度 *!*/
+    -fx-background-color: transparent;
+}
+

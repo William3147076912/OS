@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.leewyatt.rxcontrols.controls.RXAvatar?>
+<?import com.leewyatt.rxcontrols.controls.RXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: rgb(25,25,25);" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scau.cfd.controller.MainController">
+    <children>
+      <RXAvatar layoutX="173.0" layoutY="35.0" prefHeight="32.0" prefWidth="34.0">
+         <image>
+            <Image url="@../../../../../../../Pictures/Saved%20Pictures/6.gif" />
+         </image>
+      </RXAvatar>
+        <TableView layoutY="100.0" prefHeight="700.0" prefWidth="700.0" stylesheets="@../css/table-view.css">
+            <columns>
+                <TableColumn prefWidth="250.0" style="-fx-background-clolor: black;" text="名称" />
+                <TableColumn prefWidth="150.0" text="修改日期" />
+                <TableColumn prefWidth="150.0" text="类型" />
+                <TableColumn prefWidth="150.0" text="大小" />
+            </columns>
+        </TableView>
+      <RXTextField buttonDisplayMode="HIDE" layoutX="224.0" layoutY="35.0" prefHeight="32.0" prefWidth="476.0" promptText="/com/scau/cfd" style="-fx-background-color: rgb( 44, 44, 44); -fx-background-radius: 10;" />
+      <RXTextField layoutX="720.0" layoutY="35.0" prefHeight="32.0" prefWidth="262.0" promptText="/com/scau/cfd" style="-fx-background-color: rgb( 44, 44, 44); -fx-background-radius: 10;" />
+      <Label alignment="CENTER" layoutX="799.0" layoutY="166.0" prefHeight="32.0" prefWidth="105.0" text="文件名" textFill="#f5f2f2" />
+      <Label layoutX="720.0" layoutY="418.0" prefHeight="32.0" prefWidth="105.0" text="修改日期" textFill="#f5f2f2" />
+      <Label layoutX="720.0" layoutY="266.0" prefHeight="32.0" prefWidth="105.0" text="文件类型" textFill="#f5f2f2" />
+      <Label layoutX="720.0" layoutY="368.0" prefHeight="32.0" prefWidth="105.0" text="文件位置" textFill="#f5f2f2" />
+      <Label layoutX="720.0" layoutY="315.0" prefHeight="32.0" prefWidth="105.0" text="大小" textFill="#f5f2f2" />
+      <Label layoutX="877.0" layoutY="266.0" prefHeight="32.0" prefWidth="105.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label layoutX="877.0" layoutY="315.0" prefHeight="32.0" prefWidth="105.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label layoutX="877.0" layoutY="368.0" prefHeight="32.0" prefWidth="105.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label layoutX="720.0" layoutY="465.0" prefHeight="32.0" prefWidth="105.0" text="文件属性" textFill="#f5f2f2" />
+      <Label layoutX="877.0" layoutY="418.0" prefHeight="32.0" prefWidth="105.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label layoutX="877.0" layoutY="465.0" prefHeight="32.0" prefWidth="105.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+    </children>
+</AnchorPane>
