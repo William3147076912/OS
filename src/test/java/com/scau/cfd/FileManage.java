@@ -20,8 +20,7 @@ public class FileManage {
         return openedFileArrayList.size();
     }
 
-    public static boolean isOpened(String currentFileWithPath)
-    {
+    public static boolean isOpened(String currentFileWithPath) {
         for (OpenedFile openedFile : openedFileArrayList) {
             if (openedFile.pathAndFilename.equals(currentFileWithPath)) {
                 return true;
@@ -29,6 +28,7 @@ public class FileManage {
         }
         return false;
     }
+
     public static boolean CreateFile(String filename, byte fileAttribute) throws IOException {
         boolean finded = false;
         byte[] item = new byte[3];
@@ -131,7 +131,7 @@ public class FileManage {
     }
 
     public static boolean CloseFile(String filename) {
-        String currenFile= CatalogManage.absolutePath + filename;
+        String currenFile = CatalogManage.absolutePath + filename;
         for (OpenedFile openedFile : openedFileArrayList) {
             if (openedFile.pathAndFilename.equals(currenFile)) {
                 openedFileArrayList.remove(openedFile);
@@ -143,7 +143,7 @@ public class FileManage {
     }
 
     public static boolean DeleteFile(String filename) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
@@ -152,8 +152,7 @@ public class FileManage {
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 //然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
-                if(isOpened(currentFile))
-                {
+                if (isOpened(currentFile)) {
                     System.out.println("the file has been opened,could not delete it");
                     file.close();
                     return false;
@@ -163,12 +162,15 @@ public class FileManage {
                 int location = item[6];
                 byte blockNum;
                 file.seek(location);
-                do {
+                while (true){
                     blockNum = file.readByte();
-                    location = blockNum;
-                    file.write(0);
                     file.seek(location);
-                } while (blockNum != (byte) 255);
+                    file.write(0);
+                    location = blockNum;
+                    if (location > 0)
+                        file.seek(location);
+                    else break;
+                }
                 file.close();
                 return true;
             }
