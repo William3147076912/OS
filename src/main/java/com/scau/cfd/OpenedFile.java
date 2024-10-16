@@ -26,8 +26,8 @@ public class OpenedFile {
     }
 
     // 已打开文件表中读、写指针的结构
-    public static class Pointer {
-        int dnum;    // 磁盘盘块号
-        int bnum;    // 磁盘盘块内第几个字节
-    }
+    //public static class Pointer {
+    //    int dnum;    // 磁盘盘块号
+    //    int bnum;    // 磁盘盘块内第几个字节
+    //}
 }

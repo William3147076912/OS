@@ -97,6 +97,13 @@ public class Main {
                         System.out.println("错误：删除文件失败");
                     }
                     break;
+                case "tf":
+                    if (command.length < 2) {
+                        System.out.println("error");
+                        break;
+                    }
+                    FileManage.TypeFile(command[1]);
+                    break;
                 case "format":
                     disk.format();
                     break;
