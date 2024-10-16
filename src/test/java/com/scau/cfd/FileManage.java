@@ -1,10 +1,15 @@
 package com.scau.cfd;
 
+import javax.sound.midi.Soundbank;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * 文件管理类，提供文件操作的相关功能，如创建、打开、读取、写入、关闭和删除文件。
@@ -49,7 +54,7 @@ public class FileManage {
      * @throws IOException 如果发生 I/O 错误
      */
     public static boolean CreateFile(String filename, byte fileAttribute) throws IOException {
-        boolean found = false;
+        boolean finded = false;
         byte[] item = new byte[3];
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
 
@@ -58,7 +63,7 @@ public class FileManage {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item);
             if (filename.equals(new String(item, StandardCharsets.US_ASCII))) {
-                System.out.println("同名文件或目录已存在");
+                System.out.println("the file or dir with same name has existed");
                 return false;
             }
         }
@@ -68,9 +73,9 @@ public class FileManage {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 3);
             if (item[0] == '$') {
-                found = true;
+                finded = true;
 
-                // 新建文件并更新文件分配表
+//                新建文件并且改变文件分配表
                 OurFile son = new OurFile(filename);
                 son.number = Main.disk.findEmpty();
                 file.seek(son.number);
@@ -78,8 +83,9 @@ public class FileManage {
                 son.attribute = fileAttribute;
                 son.type = new byte[]{'A', 'A'};
                 son.length = 1;
+//注意：此时文件类型默认为“AA”，文件长度默认为1，文件属性默认为0x04
 
-                // 填写文件项
+//               填写文件项
                 file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
                 file.write(son.filename);
                 file.write(son.type);
@@ -88,10 +94,11 @@ public class FileManage {
                 file.write(son.length);
                 break;
             }
+
         }
 
         file.close();
-        return found;
+        return finded;
     }
 
     /**
@@ -110,12 +117,13 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
+            //首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
-                // 检查文件是否已打开
+                //然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
                 for (OpenedFile openedFile : openedFileArrayList) {
                     if (openedFile.pathAndFilename.equals(currentFile)) {
-                        System.out.println("文件已打开");
+                        System.out.println("the file has been opened");
                         return openedFile;
                     }
                 }
@@ -125,14 +133,13 @@ public class FileManage {
                 file1.attribute = item[5];
                 file1.number = item[6];
                 file1.flag = type;
-                file1.read = new Pointer(file1.number, 0);
+                file1.read = new pointer(file1.number, 0);
                 file1.write = file1.read;
                 openedFileArrayList.add(file1);
                 return file1;
             }
         }
-
-        System.out.println("未找到文件");
+        System.out.println("could not find the file");
         return null;
     }
 
@@ -147,11 +154,11 @@ public class FileManage {
     public static boolean ReadFile(String filename, int length) throws IOException {
         OpenedFile file;
         if ((file = FileManage.OpenFile(filename, (byte) 'r')) == null) {
-            System.out.println("打开文件错误");
+            System.out.println("open file error");
             return false;
         }
         if (file.length < length) {
-            System.out.println("文件长度小于所需长度");
+            System.out.println("the file is smaller than you require");
             return false;
         }
 
@@ -168,12 +175,12 @@ public class FileManage {
      */
     public static boolean WriteFile(String filename, int length) throws IOException {
         OpenedFile file;
-        if ((file = FileManage.OpenFile(filename, (byte) 'w')) == null) {
-            System.out.println("打开文件错误");
+        if ((file = FileManage.OpenFile(filename, (byte) 'r')) == null) {
+            System.out.println("open file error");
             return false;
         }
         if (file.length < length) {
-            System.out.println("文件长度小于所需长度");
+            System.out.println("the file is smaller than you require");
             return false;
         }
 
@@ -187,14 +194,14 @@ public class FileManage {
      * @return 如果关闭成功返回 true，否则返回 false
      */
     public static boolean CloseFile(String filename) {
-        String currentFile = CatalogManage.absolutePath + filename;
+        String currenFile = CatalogManage.absolutePath + filename;
         for (OpenedFile openedFile : openedFileArrayList) {
-            if (openedFile.pathAndFilename.equals(currentFile)) {
+            if (openedFile.pathAndFilename.equals(currenFile)) {
                 openedFileArrayList.remove(openedFile);
                 return true;
             }
         }
-        System.out.println("未找到要关闭的文件");
+        System.out.println("could not find the file to close");
         return false;
     }
 
@@ -213,11 +220,19 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
+            //首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                if((item[5]&0x04)!=0x04)
+                {
+                    System.out.println("failed, it's not a file or it's a system file");
+                    file.close();
+                    return false;
+                }
+                //然后判断已打开文件列表中是否有已有该文件
                 // 检查文件是否已打开
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (isOpened(currentFile)) {
-                    System.out.println("文件已打开，无法删除");
+                    System.out.println("the file has been opened,could not delete it");
                     file.close();
                     return false;
                 }
@@ -227,33 +242,68 @@ public class FileManage {
                 file.write('$');
                 int location = item[6];
                 byte blockNum;
-                file.seek(location);
                 do {
-                    blockNum = file.readByte();
-                    location = blockNum;
-                    file.write(0);
                     file.seek(location);
-                } while (blockNum != (byte) 255);
+                    blockNum = file.readByte();
+                    file.seek(location);
+                    file.write(0);
+                    location = blockNum;
+                } while (location >= 0);
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        System.out.println("could not find the file in current catalog");
+        return false;
+    }
 
+    public static boolean TypeFile(String filename) throws IOException{
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 8);
+            //首先判断当前目录下是否有该文件
+            if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                if((item[5]&0x04)!=0x04)
+                {
+                    System.out.println("failed, it's not a file");
+                    file.close();
+                    return false;
+                }
+                //然后判断已打开文件列表中是否有已有该文件
+//                String currentFile = CatalogManage.absolutePath + filename;
+//                if (isOpened(currentFile)) {
+//                    file.close();
+//                    return false;
+//                }
+                byte[] block=new byte[64];
+                int location = item[6];
+                byte blockNum;
+                StringBuilder content= new StringBuilder();
+                do {
+                    file.seek(location);
+                    blockNum = file.readByte();
+
+                    file.seek(64 * location);
+                    file.read(block);
+                    content.append(new String(block, StandardCharsets.US_ASCII));
+
+                    location = blockNum;
+                } while (location >= 0);
+                System.out.println(content);
                 file.close();
                 return true;
             }
         }
 
         file.close();
-        System.out.println("当前目录下未找到文件");
+        System.out.println("could not find the file in current catalog");
         return false;
     }
 
-    /**
-     * 显示文件内容。
-     *
-     * @param filename 文件名
-     * @return 如果显示成功返回 true，否则返回 false
-     */
-    public static boolean TypeFile(String filename) {
-        return true;
-    }
+
 
     /**
      * 修改文件。
