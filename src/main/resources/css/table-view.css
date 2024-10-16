@@ -20,6 +20,7 @@
     -fx-border-width: 1;
 }
 
+
 .table-column {
     -fx-opacity: 0.5;
 }
@@ -44,6 +45,7 @@
 .table-view .table-cell {
     -fx-text-fill: white; /* 单元格文本颜色 */
     -fx-border-color: transparent;
+    -fx-alignment: center;
 }
 
 /* 隐藏滚动条按钮 */

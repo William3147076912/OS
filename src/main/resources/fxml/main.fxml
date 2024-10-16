@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.leewyatt.rxcontrols.controls.RXAvatar?>
+<?import com.leewyatt.rxcontrols.controls.RXLineButton?>
+<?import com.leewyatt.rxcontrols.controls.RXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: rgb(25,25,25);" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scau.cfd.controller.MainController">
+    <children>
+      <RXAvatar layoutX="173.0" layoutY="35.0" prefHeight="32.0" prefWidth="34.0">
+         <image>
+            <Image url="@../images/6.gif" />
+         </image>
+      </RXAvatar>
+        <TableView fx:id="tableView" layoutY="100.0" prefHeight="700.0" prefWidth="700.0" stylesheets="@../css/table-view.css">
+            <columns>
+                <TableColumn prefWidth="250.0" text="名称" />
+                <TableColumn prefWidth="150.0" text="属性" />
+                <TableColumn prefWidth="150.0" text="类型" />
+                <TableColumn prefWidth="150.0" text="大小" />
+            </columns>
+        </TableView>
+      <RXTextField fx:id="path" buttonDisplayMode="HIDE" layoutX="224.0" layoutY="35.0" prefHeight="32.0" prefWidth="476.0" promptText="/com/scau/cfd" style="-fx-background-color: rgb( 44, 44, 44); -fx-background-radius: 10;" />
+      <RXTextField fx:id="search" layoutX="720.0" layoutY="35.0" prefHeight="32.0" prefWidth="262.0" promptText="/com/scau/cfd" style="-fx-background-color: rgb( 44, 44, 44); -fx-background-radius: 10;" />
+      <Label fx:id="name" alignment="CENTER" layoutX="799.0" layoutY="166.0" prefHeight="32.0" prefWidth="105.0" text="名称" textFill="#f5f2f2">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label fx:id="type" layoutX="720.0" layoutY="266.0" prefHeight="32.0" prefWidth="50.0" text="类型" textFill="#f5f2f2" />
+      <Label fx:id="position" layoutX="720.0" layoutY="368.0" prefHeight="32.0" prefWidth="50.0" text="位置" textFill="#f5f2f2" />
+      <Label fx:id="size" layoutX="720.0" layoutY="418.0" prefHeight="32.0" prefWidth="50.0" text="大小" textFill="#f5f2f2" />
+      <Label fx:id="typeField" alignment="CENTER_RIGHT" layoutX="782.0" layoutY="266.0" prefHeight="32.0" prefWidth="200.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label fx:id="sizeField" alignment="CENTER_RIGHT" layoutX="782.0" layoutY="418.0" prefHeight="32.0" prefWidth="200.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label fx:id="positionField" alignment="CENTER_RIGHT" layoutX="782.0" layoutY="368.0" prefHeight="32.0" prefWidth="200.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <Label fx:id="stats" layoutX="720.0" layoutY="315.0" prefHeight="32.0" prefWidth="50.0" text="属性" textFill="#f5f2f2" />
+      <Label fx:id="statsField" alignment="CENTER_RIGHT" layoutX="782.0" layoutY="315.0" prefHeight="32.0" prefWidth="200.0" text="xxxxxxxxxxxxxxx" textFill="#f5f2f2" />
+      <RXLineButton fx:id="test01" layoutX="786.0" layoutY="503.0" text="改变" textFill="WHITE" />
+    </children>
+</AnchorPane>
