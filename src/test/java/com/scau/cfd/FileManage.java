@@ -125,7 +125,7 @@ public class FileManage {
                 file1.attribute = item[5];
                 file1.number = item[6];
                 file1.flag = type;
-                file1.read = new pointer(file1.number, 0);
+                file1.read = new Pointer(file1.number, 0);
                 file1.write = file1.read;
                 openedFileArrayList.add(file1);
                 return file1;
