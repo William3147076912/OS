@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.leewyatt.rxcontrols.controls.RXAvatar?>
+<?import com.leewyatt.rxcontrols.controls.RXLineButton?>
+<?import com.leewyatt.rxcontrols.controls.RXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<!--在JavaFX中，getStyle()方法用于获取应用于节点的内联样式（inline styles）。内联样式是直接应用到节点上的CSS样式，可以通过编程方式设置。
+这个方法返回一个字符串，包含节点的内联样式。例如，如果你通过setStyle()方法为一个节点设置了样式，你可以使用getStyle()方法来获取这个样式。-->
+
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="603.0" prefWidth="595.0" style="-fx-background-color: rgb(23, 27, 30);-fx-effect: dropshadow(gaussian, black, 50, 0, 0, 0);   -fx-background-insets: 50;" stylesheets="@../css/my_theme.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scau.cfd.controller.FileController">
+    <children>
+        <RXTextField fx:id="nameField" layoutX="218.0" layoutY="174.0" onClickButton="#deleteText" prefHeight="34.0" prefWidth="169.0" promptText="请输入文件名" styleClass="text-field" />
+        <RXTextField fx:id="typeFIeld" layoutX="218.0" layoutY="254.0" onClickButton="#deleteText" prefHeight="34.0" prefWidth="169.0" promptText="请输入文件类型名" styleClass="text-field" />
+        <RXAvatar fx:id="image" arcHeight="50.0" arcWidth="50.0" layoutX="241.0" layoutY="-1.0" onMouseClicked="#setImage" prefHeight="130.0" prefWidth="122.0" shapeType="HEXAGON_V">
+            <image>
+                <Image url="@../images/康纳酱.gif" />
+            </image>
+        </RXAvatar>
+        <RXLineButton fx:id="save" layoutX="184.0" layoutY="435.0" lineType="RISE" onMouseClicked="#save" prefHeight="43.0" prefWidth="114.0" text="保存" textAlignment="CENTER" textFill="#f2efef">
+            <font>
+                <Font size="26.0" />
+            </font>
+        </RXLineButton>
+        <RXLineButton fx:id="cancel" layoutX="298.0" layoutY="435.0" lineSpacing="3.0" lineType="RISE" onMouseClicked="#cancel" prefHeight="43.0" prefWidth="114.0" text="取消" textFill="#fcfbfb">
+            <font>
+                <Font size="26.0" />
+            </font>
+        </RXLineButton>
+        <Label fx:id="l0" alignment="CENTER_RIGHT" layoutX="92.0" layoutY="174.0" prefHeight="34.0" prefWidth="96.0" text="文件名" textFill="WHITE" />
+        <Label fx:id="l1" alignment="CENTER_RIGHT" layoutX="92.0" layoutY="254.0" prefHeight="34.0" prefWidth="96.0" text="文件类型" textFill="WHITE" />
+        <Label fx:id="l2" alignment="CENTER_RIGHT" layoutX="92.0" layoutY="334.0" prefHeight="34.0" prefWidth="96.0" text="文件属性" textFill="WHITE" />
+      <RadioButton fx:id="r0" layoutX="210.0" layoutY="343.0" mnemonicParsing="false" selected="true" text="普通文件" textFill="WHITE" />
+      <RadioButton fx:id="r1" layoutX="282.0" layoutY="343.0" mnemonicParsing="false" text="系统文件" textFill="WHITE" />
+      <RadioButton fx:id="r2" layoutX="355.0" layoutY="343.0" mnemonicParsing="false" text="只读文件" textFill="WHITE" />
+    </children>
+</AnchorPane>

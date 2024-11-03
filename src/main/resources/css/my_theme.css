@@ -1,0 +1,122 @@
+.dialog-pane {
+    -fx-background-color: rgb(23, 27, 30); /* 设置背景颜色 */
+}
+
+.tableColumn {
+    -fx-text-fill: rgb(26, 31, 33);
+    -fx-prompt-text-fill: white;
+}
+
+.text-field {
+    -fx-text-fill: white;
+    -fx-background-color: rgb(26, 31, 33);
+    background-color: rgb(26, 31, 33); /* 设置背景颜色 */
+    -fx-border-color: #d9d9d9;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.text-field:focused {
+    -fx-border-color: #0078d4;
+    -fx-border-width: 2px;
+}
+
+.text-field:hover {
+    -fx-border-color: #0078d4;
+}
+
+.text-field:disabled {
+    -fx-opacity: 0.5;
+}
+
+
+.choice-box {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+    -fx-background-color: rgb(26, 31, 33);
+    -fx-border-color: #d9d9d9;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.choice-box:focused {
+    -fx-border-color: #0078d4;
+    -fx-border-width: 2px;
+    -fx-text-fill: white;
+}
+
+.choice-box .label {
+    -fx-text-fill: rgb(246, 180, 180);
+}
+
+
+.text-area:hover {
+    -fx-border-color: #0078d4;
+}
+
+.text-area:disabled {
+    -fx-opacity: 0.5;
+}
+
+.btn1 {
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-background-color: rgb(23, 27, 30);
+    -rx-fill-text-paint: #fff770;
+    -fx-border-color: transparent;
+}
+
+.btn1 .fill-region {
+    -fx-background-radius: 15;
+    -fx-background-color: #8f2121;
+}
+
+.import_export_btn {
+    -fx-background-color: rgb(23, 27, 30);
+}
+
+.back {
+    -fx-background-image: url("../images/左指向标2.png");
+    -fx-transition: -fx-background-image 1s ease-in-out;
+}
+
+.back:hover {
+    -fx-background-image: url("../images/左指向标2.png");
+}
+
+/*l0，l1，l2是文件的名称，类型名，属性Label*/
+#l0 .ikonli-font-icon {
+    -fx-icon-size: 25;
+    -fx-icon-color: white;
+    -fx-icon-code: "anto-file";
+}
+
+#l1 .ikonli-font-icon {
+    -fx-icon-size: 25;
+    -fx-icon-color: white;
+    -fx-icon-code: "anto-file-unknown";
+}
+
+#l2 .ikonli-font-icon {
+    -fx-icon-size: 25;
+    -fx-icon-color: white;
+    -fx-icon-code: "anto-file-done";
+}
+
+#save .ikonli-font-icon {
+    -fx-icon-size: 25;
+    -fx-icon-color: white;
+    -fx-icon-code: "anto-save";
+}
+
+#cancel .ikonli-font-icon {
+    -fx-icon-size: 25;
+    -fx-icon-color: white;
+    -fx-icon-code: "anto-close-circle";
+}

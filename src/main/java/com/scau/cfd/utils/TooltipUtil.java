@@ -21,22 +21,21 @@ import java.util.Objects;
  * @description:
  */
 public class TooltipUtil {
-    private static final ImageView imageView = new ImageView(new Image(Objects.requireNonNull(
-            MainController.class.getResourceAsStream("/images/康纳.jpg")), 50, 50, false, false));
 
     public static void insertTooltip(Control control, String text) {
-        Tooltip tooltip = new Tooltip("o(=•ェ•=)m：" + text);
+        Tooltip tooltip = new Tooltip(/* "o(=•ェ•=)m：" + */ text);
         tooltip.setFont(new Font(20));
         tooltip.setGraphic(new FontIcon(Ionicons.ION_SOCIAL_OCTOCAT) {{
             setIconColor(new Color(1, 1, 1, 1));
         }});
         control.setTooltip(tooltip);
-
-        ((Label) control).textProperty().addListener((observable, oldValue, newValue) -> {
-            Tooltip tooltip1 = new Tooltip("o(=•ェ•=)m：" + newValue);
-            tooltip1.setFont(new Font(20));
-            tooltip.setGraphic(new FontIcon(Ionicons.ION_SOCIAL_OCTOCAT));
-            control.setTooltip(tooltip1);
-        });
+        if (control instanceof Label) {
+            ((Label) control).textProperty().addListener((observable, oldValue, newValue) -> {
+                Tooltip tooltip1 = new Tooltip(/* "o(=•ェ•=)m：" + */ newValue);
+                tooltip1.setFont(new Font(20));
+                tooltip.setGraphic(new FontIcon(Ionicons.ION_SOCIAL_OCTOCAT));
+                control.setTooltip(tooltip1);
+            });
+        }
     }
 }

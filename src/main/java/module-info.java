@@ -6,14 +6,18 @@
  * @description:
  */
 module untitled {
+    requires org.kordamp.ikonli.core;
     requires javafx.fxml;
     requires static lombok;
     requires rxcontrols;
     requires org.kordamp.ikonli.javafx;
-    requires javafx.controls;
     requires org.kordamp.ikonli.ionicons;
-    requires org.kordamp.ikonli.core;
-    requires java.xml;
+    requires com.googlecode.ezvcard;
+    requires org.kordamp.ikonli.antdesignicons;
+    requires io.vproxy.vfx;
+    requires javafx.controls;
+    requires org.jetbrains.annotations;
+    requires guice;
     opens com.scau.cfd to javafx.fxml;
     opens com.scau.cfd.controller to javafx.fxml;
     exports com.scau.cfd;
