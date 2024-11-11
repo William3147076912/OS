@@ -51,6 +51,10 @@ public class OurFile {
         return new String(type);
     }
 
+    public void setType(String type) {
+        this.type = type.getBytes();
+    }
+
     public int getAttribute() {
         return attribute;
     }

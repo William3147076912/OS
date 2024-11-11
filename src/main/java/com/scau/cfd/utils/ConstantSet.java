@@ -9,6 +9,8 @@ import java.util.HashMap;
  * @description:
  */
 public class ConstantSet {
+    public static final int ROW_HEIGHT = 100;
+    public static final int TABLE_HEAD_HEIGHT = 30;
     public static final int CATEGORY = 8;
     public static final int FILE = 4;
     public static final int SYSTEM_FILE = 2;

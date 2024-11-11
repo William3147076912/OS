@@ -1,94 +1,57 @@
 package com.scau.cfd.william_test;
 
-/**
- * 这个类是：
- * @author: William
- * @date: 2024-11-03T18:47:50CST 18:47
- * @description:
- */
-
+import com.scau.cfd.utils.ConstantSet;
+import com.scau.cfd.utils.ImageUtils;
+import com.scau.cfd.utils.MyFusionButton;
+import io.vproxy.vfx.ui.button.FusionButton;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class MultiSelectComboBox extends Application {
-
-    private final List<String> options = List.of("选项 1", "选项 2", "选项 3", "选项 4");
-    private final List<String> selectedOptions = new ArrayList<>();
-
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.setEditable(false);
+        FusionButton fusionButton = new FusionButton();
+        // 创建一个MenuButton
+        MyFusionButton button = new MyFusionButton("选择一个选项");
+        button.setIcon(new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/file.png")).toExternalForm(), ConstantSet.ROW_HEIGHT, ConstantSet.ROW_HEIGHT, true, true));
+        // 创建MenuItem
+        MenuItem item1 = new MenuItem("选项1");
+        MenuItem item2 = new MenuItem("选项2");
+        MenuItem item3 = new MenuItem("选项3");
 
-        // 自定义下拉列表
-        ComboBoxPopup comboBoxPopup = new ComboBoxPopup(comboBox, options, selectedOptions);
-        comboBox.setOnMouseClicked(e -> comboBoxPopup.show());
+        // 给每个MenuItem添加事件处理器
+        item1.setOnAction(e -> System.out.println("选择了选项1"));
+        item2.setOnAction(e -> System.out.println("选择了选项2"));
+        item3.setOnAction(e -> System.out.println("选择了选项3"));
+        // 创建ContextMenu
+        ContextMenu contextMenu = new ContextMenu();
+        // 将MenuItem添加到MenuButton
+        contextMenu.getItems().addAll(item1, item2, item3);
+        // 创建布局容器
+        VBox vBox = new VBox(button);
 
-        // 显示所选项
-        Button button = new Button("确认选择");
+        // 设置场景
+        Scene scene = new Scene(vBox, 200, 150);
+        // 将ContextMenu与Button关联
         button.setOnAction(e -> {
-            System.out.println("选择的项: " + selectedOptions);
+            // 显示ContextMenu
+            contextMenu.show(button, button.getLayoutX(), button.getLayoutY() + button.getHeight());
         });
 
-        VBox vbox = new VBox(comboBox, button);
-        Scene scene = new Scene(vbox, 300, 250);
-
-        primaryStage.setTitle("多选 ComboBox 示例");
+        // 设置舞台（窗口）属性
+        primaryStage.setTitle("MenuButton 示例");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    // 自定义下拉框
-    private class ComboBoxPopup {
-        private final ComboBox<String> comboBox;
-        private final List<String> options;
-        private final List<String> selectedOptions;
-
-        public ComboBoxPopup(ComboBox<String> comboBox, List<String> options, List<String> selectedOptions) {
-            this.comboBox = comboBox;
-            this.options = options;
-            this.selectedOptions = selectedOptions;
-        }
-
-        public void show() {
-            Stage popupStage = new Stage();
-            VBox vbox = new VBox();
-
-            for (String option : options) {
-                CheckBox checkBox = new CheckBox(option);
-                checkBox.setSelected(selectedOptions.contains(option));
-                checkBox.setOnAction(e -> {
-                    if (checkBox.isSelected()) {
-                        selectedOptions.add(option);
-                    } else {
-                        selectedOptions.remove(option);
-                    }
-                    updateComboBox();
-                });
-                vbox.getChildren().add(checkBox);
-            }
-
-            Scene scene = new Scene(vbox);
-            popupStage.setScene(scene);
-            popupStage.initOwner(comboBox.getScene().getWindow());
-            popupStage.show();
-        }
-
-        private void updateComboBox() {
-            comboBox.getItems().clear();
-            comboBox.getItems().add(String.join(", ", selectedOptions));
-        }
     }
 }

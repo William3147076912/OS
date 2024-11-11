@@ -6,7 +6,9 @@ import com.leewyatt.rxcontrols.controls.RXTextField;
 import com.leewyatt.rxcontrols.event.RXActionEvent;
 import com.scau.cfd.OurFile;
 import com.scau.cfd.utils.ConstantSet;
+import io.vproxy.vfx.ui.alert.SimpleAlert;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.image.Image;
@@ -88,16 +90,32 @@ public class FileController {
 
     @FXML
     void save(MouseEvent event) {
+        byte sum = 0;
+        if (r0.isSelected()) sum += ConstantSet.FILE;
+        if (r1.isSelected()) sum += ConstantSet.SYSTEM_FILE;
+        if (r2.isSelected()) sum += ConstantSet.READ_ONLY_FILE;
+        if (sum >= ConstantSet.FILE + ConstantSet.SYSTEM_FILE) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "文件类型不能同时为系统文件和只读文件，请重新选择(´▽`ʃ♡ƪ)");
+            return;
+        }
         if (newOrModify == 0) {
-            int sum = 0;
-            if (r0.isSelected()) sum += ConstantSet.FILE;
-            if (r1.isSelected()) sum += ConstantSet.SYSTEM_FILE;
-            if (r2.isSelected()) sum += ConstantSet.READ_ONLY_FILE;
-            new OurFile(nameField.getText(), typeFIeld.getText(), sum, 0, 0);
+            if (MainTestController.getTableView().getItems().size() >= 8) {
+                SimpleAlert.show(Alert.AlertType.ERROR, "最多只能创建8个目录项，请删除后再试！(≧∇≦)ﾉ");
+                return;
+            }
+            MainTestController.getTableView().getItems().add(new OurFile(nameField.getText(), typeFIeld.getText(), sum, 0, 0));
         } else if (newOrModify == 1) {
-
+            var file = (OurFile) MainTestController.getTableView().getSelectedItem();
+            int index = MainTestController.getTableView().getItems().indexOf(file);
+            MainTestController.getTableView().getItems().remove(file);
+            file.setName(nameField.getText());
+            file.setType(typeFIeld.getText());
+            file.setAttribute(sum);
+            System.out.println("修改了文件");
+            MainTestController.getTableView().getItems().add(index, file);
+            cancel(event);
         } else {
-            throw new RuntimeException("newOrModify的值有误");
+            SimpleAlert.show(Alert.AlertType.ERROR, "newOrModify的值有误,请联系作者w(ﾟДﾟ)w");
         }
     }
 
@@ -144,7 +162,7 @@ public class FileController {
                 }
             }
         } else {
-            throw new RuntimeException("newOrModify的值有误");
+            SimpleAlert.show(Alert.AlertType.ERROR, "newOrModify的值有误,请联系作者w(ﾟДﾟ)w");
         }
 
     }

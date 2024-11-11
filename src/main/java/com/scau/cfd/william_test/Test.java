@@ -29,6 +29,7 @@ public class Test extends Application {
         AnchorPane root = fxmlLoader.load();
         // 由于tableview是自定义类，没继承control类，所以不能借助fxml初始化，只能自己手动初始化
         root.getChildren().add(MainTestController.getTableView().getNode());
+        root.getChildren().add(MainTestController.getControlPane().getNode());
         stage.getSceneGroup().addScene(new VScene(VSceneRole.MAIN) {{
             getContentPane().getChildren().add(root);
         }});

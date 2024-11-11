@@ -4,19 +4,26 @@ import com.leewyatt.rxcontrols.controls.RXLineButton;
 import com.scau.cfd.Catalog;
 import com.scau.cfd.OurFile;
 import com.scau.cfd.utils.ConstantSet;
+import com.scau.cfd.utils.ImageUtils;
 import com.scau.cfd.utils.PopupScene;
+import com.scau.cfd.utils.TUtils;
 import com.scau.cfd.utils.TooltipUtil;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.manager.font.FontUsages;
+import io.vproxy.vfx.ui.alert.SimpleAlert;
+import io.vproxy.vfx.ui.button.FusionButton;
+import io.vproxy.vfx.ui.layout.HPadding;
+import io.vproxy.vfx.ui.pane.FusionPane;
 import io.vproxy.vfx.ui.table.VTableColumn;
 import io.vproxy.vfx.ui.table.VTableView;
 import io.vproxy.vfx.ui.wrapper.FusionW;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import javafx.animation.FadeTransition;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -24,11 +31,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import lombok.Getter;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -46,12 +55,18 @@ import java.util.Objects;
  * @description:
  */
 public class MainTestController {
-    private static final double ROW_HEIGHT = 30;
+    private static final double ROW_HEIGHT = ConstantSet.ROW_HEIGHT;
     private static final VTableView<Object> tableView = new VTableView<>() {{
         getNode().setPrefWidth(700);
         getNode().setPrefHeight(700);
         getNode().setLayoutY(100);
     }};  // 表格视图
+    @Getter
+    private static final FusionPane // 菜单栏
+            controlPane = new FusionPane(false) {{
+        getNode().setLayoutY(50);
+        getNode().setPrefHeight(50);
+    }};
     @FXML
     private RXLineButton back;
     @FXML
@@ -83,16 +98,16 @@ public class MainTestController {
     private void initialize() {
 
         // back.setGraphic(new FontIcon());
-        Image image1 = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/images/左指向标1.png")), 50, 50, false, false);
-        Image image2 = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/images/左指向标2.png")), 50, 50, false, false);
-        ImageView imageView = new ImageView(image1);
-        back.setGraphic(imageView);
+        // Image image1 = new Image(Objects.requireNonNull(
+        //         getClass().getResourceAsStream("/images/左指向标1.png")), 50, 50, false, false);
+        // Image image2 = new Image(Objects.requireNonNull(
+        //         getClass().getResourceAsStream("/images/左指向标2.png")), 50, 50, false, false);
+        // ImageView imageView = new ImageView(image1);
+        // back.setGraphic(imageView);
         // 添加鼠标悬浮事件
-        back.setOnMouseEntered(event -> fadeTransition(imageView, image2).play());
-
-        back.setOnMouseExited(event -> fadeTransition(imageView, image1).play());
+        // back.setOnMouseEntered(event -> fadeTransition(imageView, image2).play());
+        //
+        // back.setOnMouseExited(event -> fadeTransition(imageView, image1).play());
         TooltipUtil.insertTooltip(back, "返回");
         // 初始化方法，用于设置界面控件的初始状态和行为
         path.setText(/* CatalogManage.currentCatalog.getName() */"/");
@@ -108,14 +123,30 @@ public class MainTestController {
         TooltipUtil.insertTooltip(typeField, typeField.getText());
 
         // 设置表格列的数据源
+        VTableColumn<Object, Object> iconColumn = new VTableColumn<>("图标", new ThemeLabel("图标") {{
+            setPrefHeight(50);
+        }}, data -> data);
+        iconColumn.setPrefWidth(100);
+        iconColumn.setNodeBuilder(data -> {
+            Label textNode = new Label();
+            if (data instanceof OurFile) {
+                textNode.setGraphic(ImageUtils.getFileImage());
+            } else {
+                textNode.setGraphic(ImageUtils.getDirImage());
+            }
+            return textNode;
+        });
         VTableColumn<Object, Object> nameColumn = new VTableColumn<>("名称", new ThemeLabel("名称") {{
             setPrefHeight(50);
         }}, data -> data);
         nameColumn.setPrefWidth(250);
         nameColumn.setComparator(Comparator.comparing(data -> data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName()));
         nameColumn.setNodeBuilder(data -> {
-            var textField = new TextField();
+            var textField = new TextField() {{
+                setPrefHeight(50);
+            }};
             var text = new FusionW(textField) {{
+                setPrefHeight(50);
                 FontManager.get().setFont(FontUsages.tableCellText, getLabel());
             }};
             textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
@@ -167,7 +198,7 @@ public class MainTestController {
         });
         lengthColumn.setPrefWidth(150);
         lengthColumn.setComparator(Integer::compareTo);
-        tableView.getColumns().addAll(nameColumn, attributeColumn, typeColumn, lengthColumn);
+        tableView.getColumns().addAll(iconColumn, nameColumn, attributeColumn, typeColumn, lengthColumn);
         // 创建右键菜单
         ContextMenu fileContextMenu = new ContextMenu();
         ContextMenu categoryContextMenu = new ContextMenu();
@@ -219,7 +250,7 @@ public class MainTestController {
                 } else {
                     emptyContextMenu.hide();
                 }
-            } else if (y > ROW_HEIGHT) {
+            } else if (y > ConstantSet.TABLE_HEAD_HEIGHT) {
                 Object selectedItem = tableView.getSelectedItem();
                 if (selectedItem instanceof OurFile ourFile) {
                     name.setText(ourFile.getName());
@@ -256,10 +287,42 @@ public class MainTestController {
         // 添加测试数据
         List<Object> data = Arrays.asList(
                 new Catalog("001", ConstantSet.CATEGORY, 0),
+                new Catalog("002", ConstantSet.CATEGORY, 0),
+                new Catalog("003", ConstantSet.CATEGORY, 0),
+                new Catalog("004", ConstantSet.CATEGORY, 0),
+                new Catalog("005", ConstantSet.CATEGORY, 0),
                 new OurFile("william", "233", ConstantSet.FILE + ConstantSet.READ_ONLY_FILE, 23, 444)
         );
         tableView.getItems().addAll(data);
 
+
+        HBox controlBox = new HBox();
+        controlBox.getChildren().addAll(
+                new FusionButton("新建文件") {{
+                    setOnAction(MainTestController.this::handleCfAction);
+                    setPrefWidth(120);
+                    setPrefHeight(30);
+                }},
+                new HPadding(30),
+                new FusionButton("新建目录") {{
+                    setOnAction(MainTestController.this::handleMdAction);
+                    setPrefWidth(120);
+                    setPrefHeight(30);
+                }},
+                new HPadding(30),
+                new FusionButton("删除") {{
+                    setOnAction(MainTestController.this::handleDeleteAction);
+                    setPrefWidth(120);
+                    setPrefHeight(30);
+                }},
+                new HPadding(30),
+                new FusionButton("修改") {{
+                    setOnAction(MainTestController.this::handleModifyAction);
+                    setPrefWidth(120);
+                    setPrefHeight(30);
+                }}
+        );
+        controlPane.getContentPane().getChildren().add(controlBox);
         // 应用样式
         fileContextMenu.getStyleClass().add(Objects.requireNonNull(MainTestController.this.getClass().getResource("/css/context_menu.css")).toExternalForm());
     }
@@ -303,20 +366,24 @@ public class MainTestController {
         }};
     }
 
-    private void handleModifyAction(ActionEvent actionEvent) {
+    private void handleModifyAction(Event actionEvent) {
         // 设置弹出窗口模式为修改文件模式
-        FileController.setNewOrModify(1);
-        showFileSetting();
+        if (MainTestController.getTableView().getSelectedItem() instanceof Catalog) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "目录并无修改选项，如果想修改目录名，请直接在表格目录名处修改即可（￣︶￣）↗　");
+        } else {
+            FileController.setNewOrModify(1);
+            showFileSetting();
+        }
     }
 
 
-    private void handleCfAction(ActionEvent actionEvent) {
+    private void handleCfAction(Event actionEvent) {
         // 设置弹出窗口模式为新建文件模式
         FileController.setNewOrModify(0);
         showFileSetting();
     }
 
-    private void handleDeleteAction(ActionEvent actionEvent) {
+    private void handleDeleteAction(Event actionEvent) {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem != null) {
             tableView.getItems().remove(selectedItem);
@@ -324,7 +391,7 @@ public class MainTestController {
         // 还要删除对应后端数据
     }
 
-    private void handleOpenAction(ActionEvent event) {
+    private void handleOpenAction(Event event) {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem instanceof Catalog catalog) {
             System.out.println("打开文件夹: " + catalog.getName());
@@ -333,11 +400,15 @@ public class MainTestController {
         }
     }
 
-    private void handleMdAction(ActionEvent event) {
-
+    private void handleMdAction(Event event) {
+        if (tableView.getItems().size() >= 8) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "最多只能创建8个目录项，请删除后再试！(≧∇≦)ﾉ");
+            return;
+        }
+        tableView.getItems().add(new Catalog(TUtils.randomString(2), ConstantSet.CATEGORY, 0));
     }
 
-    private void handleDirAction(ActionEvent event) {
+    private void handleDirAction(Event event) {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem instanceof Catalog catalog) {
             System.out.println("重命名文件夹: " + catalog.getName());
@@ -345,6 +416,5 @@ public class MainTestController {
             System.out.println("重命名文件: " + file.getName());
         }
     }
-
 
 }
