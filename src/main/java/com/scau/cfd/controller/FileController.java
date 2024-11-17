@@ -63,17 +63,17 @@ public class FileController {
 
     @FXML
     void setImage(MouseEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("选择图片");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("图片文件", "*.png", "*.jpg", "*.gif")
-        );
-        Window window = image.getScene().getWindow();
-        File selectedFile = fileChooser.showOpenDialog(window);
-        if (selectedFile != null) {
-            // 如果用户选择了图片文件，则加载并显示在图片视图中
-            image.setImage(new Image(selectedFile.toURI().toString()));
-            System.out.println(image.getImage().getUrl() + "替换了界面图片");
+        // FileChooser fileChooser = new FileChooser();
+        // fileChooser.setTitle("选择图片");
+        // fileChooser.getExtensionFilters().addAll(
+        //         new FileChooser.ExtensionFilter("图片文件", "*.png", "*.jpg", "*.gif")
+        // );
+        // Window window = image.getScene().getWindow();
+        // File selectedFile = fileChooser.showOpenDialog(window);
+        // if (selectedFile != null) {
+        //     // 如果用户选择了图片文件，则加载并显示在图片视图中
+        //     image.setImage(new Image(selectedFile.toURI().toString()));
+        //     System.out.println(image.getImage().getUrl() + "替换了界面图片");
 //            //将image存到本地
 //            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image.getImage(), null);
 //            String suffix = selectedFile.getName().substring(selectedFile.getName().lastIndexOf('.') + 1);
@@ -85,7 +85,7 @@ public class FileController {
 //            } catch (IOException e) {
 //                System.out.println("Error: " + e.getMessage());
 //            }
-        }
+//         }
     }
 
     @FXML
