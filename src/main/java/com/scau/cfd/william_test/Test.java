@@ -1,18 +1,21 @@
 package com.scau.cfd.william_test;
 
+import com.scau.cfd.controller.ContentController;
 import com.scau.cfd.controller.MainTestController;
+import com.scau.cfd.utils.ImageUtils;
 import io.vproxy.vfx.theme.Theme;
+import io.vproxy.vfx.ui.button.FusionImageButton;
 import io.vproxy.vfx.ui.layout.VPadding;
 import io.vproxy.vfx.ui.scene.VScene;
 import io.vproxy.vfx.ui.scene.VSceneHideMethod;
 import io.vproxy.vfx.ui.scene.VSceneRole;
+import io.vproxy.vfx.ui.scene.VSceneShowMethod;
 import io.vproxy.vfx.ui.stage.VStage;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -29,13 +32,15 @@ import javafx.stage.Stage;
  * @description:
  */
 public class Test extends Application {
+    public static VStage stage;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        var stage = new VStage(primaryStage);
+        stage = new VStage(primaryStage);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main_test.fxml"));
         AnchorPane root = fxmlLoader.load();
         addMainScene(stage, root);
@@ -57,13 +62,14 @@ public class Test extends Application {
             getContentPane().getChildren().add(root);
         }};
         stage.getInitialScene().getContentPane().getChildren().add(scene.getNode());
+        stage.getRootSceneGroup().addScene(ContentController.getContentScene(), VSceneHideMethod.FADE_OUT);
         stage.getInitialScene().enableAutoContentWidthHeight();
         FXUtils.observeWidthHeightCenter(stage.getInitialScene().getContentPane(), scene.getNode());
     }
 
     void addQuestionScene(VStage stage) {
         var questionScene = new VScene(VSceneRole.DRAWER_VERTICAL);
-        questionScene.getNode().setPrefWidth(450);
+        questionScene.getNode().setPrefWidth(550);
         questionScene.enableAutoContentWidth();
         questionScene.getNode().setBackground(new Background(new BackgroundFill(
                 Theme.current().subSceneBackgroundColor(),
@@ -76,14 +82,38 @@ public class Test extends Application {
             getChildren().add(new VPadding(20));
         }};
         questionScene.getContentPane().getChildren().add(questionBox);
-        var inTro = new ThemeLabel("用户操作细则");
-        inTro.setFont(Font.font(20));
-        var tableHeader = new ThemeLabel("表格操作");
-        var tableContent = new Label("1. 右键表格中的行，可以弹出操作菜单。\n" + "2. 也可以点击表格中的行，然后在菜单栏操作。\n" + "3. 鼠标悬浮在名称列可以便捷修改目录项名称\n" + "4. 点击表格中的列名，可以对表格进行相应排序展示。\n");
-        var fileHeader = new ThemeLabel("文件相关");
-        var fileContent = new Label("1. 合法目录与文件名仅可以使用字母、数字和除“$”、“.”、“/”以外 的字符。\n" + "2. 由于存储空间关系，名称只能有两个字符。\n" + "3.  由于存储空间关系，一个目录只能有最多八个目录项。\n");
-        questionBox.getChildren().addAll(inTro, new VPadding(40), tableHeader, tableContent, new VPadding(40), fileHeader, fileContent);
-        FXUtils.observeWidthCenter(questionScene.getContentPane(), questionBox);
+        var inTro = new ThemeLabel("用户操作细则") {{
+            setWrapText(true);
+            setFont(Font.font(30));
+        }};
+        var tableHeader = new ThemeLabel("表格操作") {{
+            setWrapText(true);
+            setFont(Font.font(25));
+        }};
+        var tableContent = new ThemeLabel("1. 右键表格中的行，可以弹出操作菜单。\n" + "2. 也可以点击表格中的行，然后在菜单栏操作。\n" + "3. 鼠标悬浮在名称列可以便捷修改目录项名称\n" + "4. 点击表格中的列名，可以对表格进行相应排序展示。\n") {{
+            setWrapText(true);
+            setFont(Font.font(20));
+        }};
+        var fileHeader = new ThemeLabel("文件相关") {{
+            setWrapText(true);
+            setFont(Font.font(25));
+        }};
+        var fileContent = new ThemeLabel("1. 合法目录，文件名与文件类型名仅可以使用字母、数字和\n除“$”、“.”、“/”以外 的字符。\n" + "2. 由于存储空间关系，名称只能有两个字符。\n" + "3. 由于存储空间关系，一个目录只能有最多八个目录项。\n") {{
+            setWrapText(true);
+            setFont(Font.font(20));
+        }};
+        questionBox.getChildren().addAll(inTro, new VPadding(100), tableHeader, new VPadding(30), tableContent, new VPadding(100), fileHeader, new VPadding(20), fileContent);
+        FXUtils.observeHeightCenter(questionScene.getContentPane(), questionBox);
 
+
+        var questionBtn = new FusionImageButton(ImageUtils.getQuestionImage()) {{
+            setPrefWidth(40);
+            setPrefHeight(VStage.TITLE_BAR_HEIGHT + 1);
+            getImageView().setFitHeight(15);
+            setLayoutX(-2);
+            setLayoutY(-1);
+        }};
+        questionBtn.setOnAction(e -> stage.getRootSceneGroup().show(questionScene, VSceneShowMethod.FROM_LEFT));
+        stage.getRoot().getContentPane().getChildren().add(questionBtn);
     }
 }

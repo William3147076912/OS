@@ -18,6 +18,7 @@ module untitled {
     requires javafx.controls;
     requires org.jetbrains.annotations;
     requires guice;
+    requires io.vproxy.base;
     opens com.scau.cfd to javafx.fxml;
     opens com.scau.cfd.controller to javafx.fxml;
     exports com.scau.cfd;
