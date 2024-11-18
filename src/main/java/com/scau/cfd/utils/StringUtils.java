@@ -1,16 +1,42 @@
 package com.scau.cfd.utils;
 
+import com.scau.cfd.Catalog;
+import com.scau.cfd.OurFile;
+import com.scau.cfd.controller.MainTestController;
 import io.vproxy.vfx.ui.loading.LoadingItem;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class TUtils {
+public class StringUtils {
     public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-    private TUtils() {
+    private StringUtils() {
+    }
+
+    public static String sanitizeName(String name) {
+        // 定义允许的字符集
+        String allowedCharsRegex = "[a-zA-Z0-9\\s!@#%&*()_+-={};:'\"|,<>?\\[\\]\\\\]";
+        // 过滤掉不允许的字符
+        String filteredName = name.replaceAll("[^" + allowedCharsRegex + "]", "");
+
+        // 截取字符串，确保长度不超过两个字符
+        if (filteredName.length() > 2) {
+            filteredName = filteredName.substring(0, 2);
+        }
+
+        return filteredName;
+    }
+
+    public static boolean isValidName(String name) {
+        String regex = "^[a-zA-Z0-9\\s!@#%&*()_+-={};:'\"|,<>?\\[\\]\\\\]{1,2}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
     }
 
     public static String randomString(int lenMin, int lenMax) {
@@ -42,9 +68,11 @@ public class TUtils {
     public static List<LoadingItem> buildLoadingItems() {
         var ls = new ArrayList<LoadingItem>();
         for (var i = 0; i < 100; ++i) {
-            ls.add(new LoadingItem(1, TUtils.randomString(10, 20), () -> {
+            ls.add(new LoadingItem(1, StringUtils.randomString(10, 20), () -> {
             }));
         }
         return ls;
     }
+
+
 }

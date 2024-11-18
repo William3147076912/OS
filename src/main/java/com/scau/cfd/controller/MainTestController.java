@@ -6,14 +6,16 @@ import com.scau.cfd.OurFile;
 import com.scau.cfd.utils.ConstantSet;
 import com.scau.cfd.utils.ImageUtils;
 import com.scau.cfd.utils.PopupScene;
-import com.scau.cfd.utils.TUtils;
+import com.scau.cfd.utils.StringUtils;
 import com.scau.cfd.utils.TooltipUtil;
+import com.scau.cfd.william_test.Test;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.manager.font.FontUsages;
 import io.vproxy.vfx.ui.alert.SimpleAlert;
 import io.vproxy.vfx.ui.button.FusionButton;
 import io.vproxy.vfx.ui.layout.HPadding;
 import io.vproxy.vfx.ui.pane.FusionPane;
+import io.vproxy.vfx.ui.scene.VSceneShowMethod;
 import io.vproxy.vfx.ui.table.VTableColumn;
 import io.vproxy.vfx.ui.table.VTableView;
 import io.vproxy.vfx.ui.wrapper.FusionW;
@@ -94,6 +96,20 @@ public class MainTestController {
         return tableView;
     }
 
+
+    public static boolean isNameExists(String name, Class<?> clazz) {
+        for (Object item : MainTestController.getTableView().getItems()) {
+            if (clazz.isInstance(item)) {
+                String itemName = clazz.cast(item) instanceof OurFile ? ((OurFile) item).getName() : ((Catalog) item).getName();
+                if (itemName.equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     @FXML
     private void initialize() {
 
@@ -150,18 +166,33 @@ public class MainTestController {
                 FontManager.get().setFont(FontUsages.tableCellText, getLabel());
             }};
             textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
-            textField.focusedProperty().addListener((ob, old, now) -> {
-                if (old == null || now == null) return;
-                if (old && now) {
-                    System.out.println(textField.getText());
-                    if (data instanceof OurFile) ((OurFile) data).setName(textField.getText());
-                    else ((Catalog) data).setName(textField.getText());
+            textField.setOnMouseExited(event -> {
+                if (!textField.getText().equals(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName())) {
+                    // 如果有做过更改才去判断名称合法性
+                    if (textField.getText().isEmpty()) {
+                        SimpleAlert.show(Alert.AlertType.ERROR, "名称不能为空(￣△￣；)");
+                        textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
+                    } else if (isNameExists(textField.getText(), data.getClass())) {
+                        SimpleAlert.show(Alert.AlertType.ERROR, "名称已存在(눈‸눈)");
+                        textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
+                    } else if (!StringUtils.isValidName(textField.getText())) {
+                        SimpleAlert.show(Alert.AlertType.ERROR, "名称不合法(งᵒ̌皿ᵒ̌)ง⁼³₌₃");
+                        textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
+                    } else {
+                        if (data instanceof OurFile) {
+                            ((OurFile) data).setName(textField.getText());
+                        } else {
+                            ((Catalog) data).setName(textField.getText());
+                        }
+                    }
                 }
+                tableView.getNode().requestFocus();
             });
-            textField.textProperty().addListener((ob, old, now) -> {
-                if (data instanceof OurFile) ((OurFile) data).setName(textField.getText());
-                else ((Catalog) data).setName(textField.getText());
-            });
+            // textField.textProperty().addListener((ob, old, now) -> {
+            //     textField.setText(sanitizeName(textField.getText()));
+            //     if (data instanceof OurFile) ((OurFile) data).setName(textField.getText());
+            //     else ((Catalog) data).setName(textField.getText());
+            // });
             return text;
         });
         VTableColumn<Object, String> attributeColumn = new VTableColumn<>("属性", new ThemeLabel("属性") {{
@@ -286,12 +317,12 @@ public class MainTestController {
 
         // 添加测试数据
         List<Object> data = Arrays.asList(
-                new Catalog("001", ConstantSet.CATEGORY, 0),
-                new Catalog("002", ConstantSet.CATEGORY, 0),
-                new Catalog("003", ConstantSet.CATEGORY, 0),
-                new Catalog("004", ConstantSet.CATEGORY, 0),
-                new Catalog("005", ConstantSet.CATEGORY, 0),
-                new OurFile("william", "233", ConstantSet.FILE + ConstantSet.READ_ONLY_FILE, 23, 444)
+                new Catalog("01", ConstantSet.CATEGORY, 0),
+                new Catalog("02", ConstantSet.CATEGORY, 0),
+                new Catalog("03", ConstantSet.CATEGORY, 0),
+                new Catalog("04", ConstantSet.CATEGORY, 0),
+                new Catalog("05", ConstantSet.CATEGORY, 0),
+                new OurFile("wi", "233", ConstantSet.FILE + ConstantSet.READ_ONLY_FILE, 23, 444)
         );
         tableView.getItems().addAll(data);
 
@@ -326,7 +357,6 @@ public class MainTestController {
         // 应用样式
         fileContextMenu.getStyleClass().add(Objects.requireNonNull(MainTestController.this.getClass().getResource("/css/context_menu.css")).toExternalForm());
     }
-
 
     private FadeTransition fadeTransition(ImageView imageView, Image toImage) {
         // 创建FadeTransition
@@ -376,7 +406,6 @@ public class MainTestController {
         }
     }
 
-
     private void handleCfAction(Event actionEvent) {
         // 设置弹出窗口模式为新建文件模式
         FileController.setNewOrModify(0);
@@ -397,6 +426,7 @@ public class MainTestController {
             System.out.println("打开文件夹: " + catalog.getName());
         } else if (selectedItem instanceof OurFile file) {
             System.out.println("打开文件: " + file.getName());
+            Test.stage.getRootSceneGroup().show(ContentController.getContentScene(), VSceneShowMethod.FROM_BOTTOM);
         }
     }
 
@@ -405,7 +435,7 @@ public class MainTestController {
             SimpleAlert.show(Alert.AlertType.ERROR, "最多只能创建8个目录项，请删除后再试！(≧∇≦)ﾉ");
             return;
         }
-        tableView.getItems().add(new Catalog(TUtils.randomString(2), ConstantSet.CATEGORY, 0));
+        tableView.getItems().add(new Catalog(StringUtils.randomString(2), ConstantSet.CATEGORY, 0));
     }
 
     private void handleDirAction(Event event) {

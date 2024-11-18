@@ -2,6 +2,7 @@ package com.scau.cfd.utils;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import lombok.Getter;
 
 import java.util.Objects;
 import java.util.Random;
@@ -14,11 +15,13 @@ import java.util.Random;
  */
 public class ImageUtils {
     private static final Image fileImage = new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/file.png")).toExternalForm(), ConstantSet.ROW_HEIGHT, ConstantSet.ROW_HEIGHT, true, true);
+    @Getter
+    private static final Image questionImage = new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/question.png")).toExternalForm());
     private static final int DIR_IMAGE_SIZE = 5;
     private static final Image[] dirImage = new Image[DIR_IMAGE_SIZE];
 
     static {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < DIR_IMAGE_SIZE; i++) {
             dirImage[i] = new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/category" + i + ".png")).toExternalForm(), ConstantSet.ROW_HEIGHT, ConstantSet.ROW_HEIGHT, true, true);
         }
     }

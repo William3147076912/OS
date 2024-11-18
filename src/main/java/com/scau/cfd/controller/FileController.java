@@ -6,6 +6,7 @@ import com.leewyatt.rxcontrols.controls.RXTextField;
 import com.leewyatt.rxcontrols.event.RXActionEvent;
 import com.scau.cfd.OurFile;
 import com.scau.cfd.utils.ConstantSet;
+import com.scau.cfd.utils.StringUtils;
 import io.vproxy.vfx.ui.alert.SimpleAlert;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -90,6 +91,11 @@ public class FileController {
 
     @FXML
     void save(MouseEvent event) {
+        // 检验文件名和文件类型合法性
+        if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidName(typeFIeld.getText())) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "文件名或文件类型不合法，请重新输入(´▽`ʃ♡ƪ)");
+            return;
+        }
         byte sum = 0;
         if (r0.isSelected()) sum += ConstantSet.FILE;
         if (r1.isSelected()) sum += ConstantSet.SYSTEM_FILE;
@@ -133,7 +139,6 @@ public class FileController {
         l2.setGraphic(new FontIcon());
         save.setGraphic(new FontIcon());
         cancel.setGraphic(new FontIcon());
-
         // 根据newOrModify的值来决定显示新建还是修改
         r0.setSelected(false);
         r1.setSelected(false);
