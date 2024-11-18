@@ -21,8 +21,8 @@ public class OpenedFile {
      */
     public OpenedFile(String pathAndFilename) {
         this.pathAndFilename = pathAndFilename;
-        this.read = new Pointer();  // 初始化读指针
-        this.write = new Pointer(); // 初始化写指针
+        this.read = null;  // 初始化读指针
+        this.write = null; // 初始化写指针
     }
 
     // 已打开文件表中读、写指针的结构

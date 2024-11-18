@@ -102,19 +102,40 @@ public class Main {
                         System.out.println("error");
                         break;
                     }
-                    FileManage.TypeFile(command[1]);
+                    String s;
+                    if ((s = FileManage.TypeFile(command[1])) == null) {
+                        System.out.println("错误：显示文件内容失败");
+                    } else {
+                        System.out.println(s);
+                    }
+                    break;
+                case "wf":
+                    if (command.length < 2) {
+                        System.out.println("错误：缺少文件名");
+                        break;
+                    }
+                    if (!FileManage.WriteFile(command[1])) {
+                        System.out.println("错误：写文件失败");
+                    }
                     break;
                 case "format":
                     disk.format();
+                    break;
+                case "ch":
+                    if (command.length < 2) {
+                        System.out.println("错误：缺少文件名");
+                        break;
+                    }
+                    if (!FileManage.Change(command[1])) {
+                        System.out.println("错误：写文件失败");
+                    }
                     break;
                 case "exit":
                     exit = true;
                 default:
                     System.out.println("未知命令");
             }
-
             if (exit) break;
-
             // 打印当前目录路径
             System.out.println(CatalogManage.absolutePath);
         }

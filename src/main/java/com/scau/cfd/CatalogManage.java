@@ -13,7 +13,10 @@ public class CatalogManage {
 
     public static boolean MakeDir(String dirName) throws IOException {
         boolean finded = false;
-        if (!dirName.matches("[^$/.]{3}")) return finded;
+        if (!dirName.matches("[^$/.]{3}")) {
+            System.out.println("文件名不正确，应为三个字符且不包含$,/或.");
+            return finded;
+        }
         byte[] item = new byte[3];
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         for (int i = 0; i < 8; i++) {
@@ -89,7 +92,6 @@ public class CatalogManage {
      */
     public static boolean RemoveDir(String dirName) throws IOException {
         boolean finded = false;
-        boolean isEmpty = true;
         byte[] item = new byte[8];
         byte[] location = new byte[1];
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
