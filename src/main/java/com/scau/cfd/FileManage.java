@@ -210,7 +210,7 @@ public class FileManage {
                 file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
                 byte location = item[6];
                 byte nextblockNum;
-                for (int k = 0; location >= 0; k++) {
+                for (int k = 0; location > 2; k++) {
                     file.seek(location);
                     nextblockNum = file.readByte();
                     buffer = Arrays.copyOf(buffer, buffer.length + 64);
@@ -247,7 +247,7 @@ public class FileManage {
                     }
                     file.seek(location);
                     nextblockNum = file.readByte();
-                    if (nextblockNum > 0)
+                    if (location > 2)
                         location = nextblockNum;
                 }
                 for (; k < blockNum; k++) {
@@ -321,7 +321,7 @@ public class FileManage {
                     file.seek(location);
                     file.write(0);
                     location = blockNum;
-                } while (location >= 0);
+                } while (location > 2);
                 file.close();
                 return true;
             }
@@ -373,7 +373,6 @@ public class FileManage {
         System.out.println("could not find the file in current catalog");
         return null;
     }
-
 
     /**
      * 修改文件。

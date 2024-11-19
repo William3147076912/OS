@@ -92,7 +92,6 @@ public class Disk {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return 0; // 没有找到空闲块
     }
 }
