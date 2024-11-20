@@ -1,5 +1,6 @@
 package com.scau.cfd;
 
+import io.vproxy.base.util.ringbuffer.ProxyOutputRingBuffer;
 import javafx.scene.control.SplitMenuButton;
 
 import java.io.IOException;
@@ -178,6 +179,79 @@ public class FileManage {
         System.out.println("could not find the file in current catalog");
         return false;
 
+    }
+
+    public static boolean WriteFileForGUI(String filename, String newContent) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
+        byte[] item = new byte[8];
+
+        // 查找文件
+        for (int i = 0; i < 8; i++) {
+            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 8);
+            //首先判断当前目录下是否有该文件
+            if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                if ((item[5] & 0x04) != 0x04) {
+                    System.out.println("failed, it's not a file or it's a system file");
+                    file.close();
+                    return false;
+                }
+                //然后判断已打开文件列表中是否有已有该文件
+                // 检查文件是否已打开
+                String currentFile = CatalogManage.absolutePath + filename;
+                if (!isOpened(currentFile)) {
+                    System.out.println("the file has not been opened,try to open it...");
+                    if (OpenFile(filename, (byte) 'w') == null) {
+                        System.out.println("open file error");
+                        file.close();
+                        return false;
+                    }
+                }
+                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                int initBlockNum = item[7];
+                int blockNum = newContent.length() / 64 + 1;
+                //修改文件项长度
+                item[7] = (byte) blockNum;
+                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.write(item[7]);
+                byte location = item[6];
+                byte nextblockNum;
+                boolean done = false;
+                int k;
+                for (k = 0; k < initBlockNum; k++) {
+                    file.seek(location * 64);
+                    file.write(newContent.substring(64 * k, (newContent.length() - 64 * k) > 64 ? 64 * (k + 1) : newContent.length()).getBytes());
+                    if ((newContent.length() - 64 * k) <= 64) {
+                        file.write('#');
+                        done = true;
+                    }
+                    file.seek(location);
+                    nextblockNum = file.readByte();
+                    if (location > 2)
+                        location = nextblockNum;
+                }
+                for (; k < blockNum; k++) {
+                    file.seek(location);
+                    nextblockNum = Main.disk.findEmpty();
+                    file.write(nextblockNum);
+                    file.seek(nextblockNum);
+                    file.write(0xFF);
+                    location = nextblockNum;
+                    file.seek(location * 64);
+                    file.write(newContent.substring(64 * k, (newContent.length() - 64 * k) > 64 ? 64 * (k + 1) : newContent.length()).getBytes());
+                    if ((newContent.length() - 64 * k) <= 64) {
+                        file.write('#');
+                        done = true;
+                    }
+                }
+                CloseFile(filename);
+                file.close();
+                return done;
+            }
+        }
+        file.close();
+        System.out.println("could not find the file in current catalog");
+        return false;
     }
 
     public static boolean WriteFile(String filename) throws IOException {
