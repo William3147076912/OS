@@ -1,4 +1,4 @@
-package com.scau.cfd.william_test;
+package com.scau.cfd.app;
 
 import javafx.application.Application;
 
@@ -9,8 +9,8 @@ import javafx.application.Application;
  * @date: 2024-10-05T16:02:58CST 16:02
  * @description:
  */
-public class TestApp {
+public class App {
     public static void main(String[] args) {
-        Application.launch(Test.class);
+        Application.launch(Main.class);
     }
 }

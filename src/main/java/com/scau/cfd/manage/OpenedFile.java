@@ -1,4 +1,4 @@
-package com.scau.cfd;
+package com.scau.cfd.manage;
 
 /**
  * 表示已打开文件的信息。
@@ -26,7 +26,7 @@ public class OpenedFile {
     }
 
     // 已打开文件表中读、写指针的结构
-    //public static class Pointer {
+    // public static class Pointer {
     //    int dnum;    // 磁盘盘块号
     //    int bnum;    // 磁盘盘块内第几个字节
     //}

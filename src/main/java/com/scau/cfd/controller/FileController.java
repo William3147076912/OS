@@ -4,7 +4,8 @@ import com.leewyatt.rxcontrols.controls.RXAvatar;
 import com.leewyatt.rxcontrols.controls.RXLineButton;
 import com.leewyatt.rxcontrols.controls.RXTextField;
 import com.leewyatt.rxcontrols.event.RXActionEvent;
-import com.scau.cfd.OurFile;
+import com.scau.cfd.manage.FileManage;
+import com.scau.cfd.manage.OurFile;
 import com.scau.cfd.utils.ConstantSet;
 import com.scau.cfd.utils.StringUtils;
 import io.vproxy.vfx.ui.alert.SimpleAlert;
@@ -12,17 +13,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import lombok.Getter;
 import lombok.Setter;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.File;
+import java.io.IOException;
 
 public class FileController {
 
@@ -105,20 +103,26 @@ public class FileController {
             return;
         }
         if (newOrModify == 0) {
-            if (MainTestController.getTableView().getItems().size() >= 8) {
+            if (MainController.getTableView().getItems().size() >= 8) {
                 SimpleAlert.show(Alert.AlertType.ERROR, "最多只能创建8个目录项，请删除后再试！(≧∇≦)ﾉ");
                 return;
             }
-            MainTestController.getTableView().getItems().add(new OurFile(nameField.getText(), typeFIeld.getText(), sum, 0, 0));
+            try {
+                FileManage.CreateFile(nameField.getText(), typeFIeld.getText(), sum);
+                MainController.refreshTable();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            // MainTestController.getTableView().getItems().add(new OurFile(nameField.getText(), typeFIeld.getText(), sum, 0, 0));
         } else if (newOrModify == 1) {
-            var file = (OurFile) MainTestController.getTableView().getSelectedItem();
-            int index = MainTestController.getTableView().getItems().indexOf(file);
-            MainTestController.getTableView().getItems().remove(file);
+            var file = (OurFile) MainController.getTableView().getSelectedItem();
+            int index = MainController.getTableView().getItems().indexOf(file);
+            MainController.getTableView().getItems().remove(file);
             file.setName(nameField.getText());
             file.setType(typeFIeld.getText());
             file.setAttribute(sum);
             System.out.println("修改了文件");
-            MainTestController.getTableView().getItems().add(index, file);
+            MainController.getTableView().getItems().add(index, file);
             cancel(event);
         } else {
             SimpleAlert.show(Alert.AlertType.ERROR, "newOrModify的值有误,请联系作者w(ﾟДﾟ)w");
@@ -149,9 +153,9 @@ public class FileController {
             r0.setSelected(true);
 
         } else if (newOrModify == 1) {
-            nameField.setText(((OurFile) MainTestController.getTableView().getSelectedItem()).getName());
-            typeFIeld.setText(((OurFile) MainTestController.getTableView().getSelectedItem()).getType());
-            OurFile ourFile = (OurFile) MainTestController.getTableView().getSelectedItem();
+            nameField.setText(((OurFile) MainController.getTableView().getSelectedItem()).getName());
+            typeFIeld.setText(((OurFile) MainController.getTableView().getSelectedItem()).getType());
+            OurFile ourFile = (OurFile) MainController.getTableView().getSelectedItem();
 
             switch (ourFile.getAttribute()) {
                 case ConstantSet.FILE -> r0.setSelected(true);

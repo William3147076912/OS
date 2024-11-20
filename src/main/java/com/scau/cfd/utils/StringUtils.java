@@ -1,8 +1,5 @@
 package com.scau.cfd.utils;
 
-import com.scau.cfd.Catalog;
-import com.scau.cfd.OurFile;
-import com.scau.cfd.controller.MainTestController;
 import io.vproxy.vfx.ui.loading.LoadingItem;
 
 import java.time.format.DateTimeFormatter;

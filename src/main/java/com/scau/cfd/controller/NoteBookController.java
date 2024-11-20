@@ -1,16 +1,12 @@
 package com.scau.cfd.controller;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.scau.cfd.utils.FileTools;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import io.vproxy.vfx.control.dialog.VDialog;
+import io.vproxy.vfx.control.dialog.VDialogButton;
+import io.vproxy.vfx.ui.alert.SimpleAlert;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -20,13 +16,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * 这个类是：
@@ -37,36 +37,25 @@ import javafx.stage.Stage;
 
 public class NoteBookController {
 
+    @FXML
+    @Getter
+    private static TextArea ta;
     // 开始搜索的位置
     int startIndex = 0;
     // textarea中光标的位置
     int position = 0;
     @FXML
-    private MenuItem SaveMenu;
-    @FXML
     private MenuItem FindMenu;
     @FXML
     private CheckMenuItem WrapMenu;
     @FXML
-    private AnchorPane layoutPane;
-    @FXML
     private MenuItem ReplaceMenu;
-    @FXML
-    private CheckMenuItem StateMenu;
-    @FXML
-    private MenuItem OpenMenu;
-    @FXML
-    private MenuItem TypefaceMenu;
-    @FXML
-    private MenuItem NewMenu;
-    @FXML
-    private TextArea ta;
-    @FXML
-    private Label label;
     @FXML
     private MenuItem Redo;
     @FXML
     private MenuItem Undo;
+    @Setter
+    private String originalText;
     private File result;
 
     // 灰度控制
@@ -78,85 +67,29 @@ public class NoteBookController {
         Redo.setDisable(true);
         Undo.setDisable(true);
 
-        // 状态栏不可视
-        label.setVisible(false);
-
-        ta.setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
-                position = ta.getCaretPosition();
-                label.setText("第" + position + "个字符");
-            }
-        });
 
         // 对textarea的内容是否改变进行监听
-        ta.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                // 如果testarea中内容部位空,则可以使用查找与替换
-                if (ta.getLength() > 0) {
-                    FindMenu.setDisable(false);
-                    ReplaceMenu.setDisable(false);
-                } // 否则禁用查找与替换
-                else {
-                    FindMenu.setDisable(true);
-                    ReplaceMenu.setDisable(true);
-                }
-                Redo.setDisable(false);
-                Undo.setDisable(false);
-                // 光标位置
-                position = ta.getCaretPosition();
-                label.setText("第" + position + "个字符");
+        ta.textProperty().addListener((observable, oldValue, newValue) -> {
+            // 如果textarea中内容部位空,则可以使用查找与替换
+            if (ta.getLength() > 0) {
+                FindMenu.setDisable(false);
+                ReplaceMenu.setDisable(false);
+            } // 否则禁用查找与替换
+            else {
+                FindMenu.setDisable(true);
+                ReplaceMenu.setDisable(true);
             }
+            Redo.setDisable(false);
+            Undo.setDisable(false);
+            // 光标位置
+            position = ta.getCaretPosition();
         });
     }
 
-    // 修改前保
-    void saveadvance() {
-        if (result != null && ta.getLength() > 0) {
-
-            FileTools.writeFile(result, ta.getText());
-        } else if (result == null && ta.getLength() > 0) {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extFilter);
-            fileChooser.setTitle("保存当前内容");
-            result = fileChooser.showSaveDialog(null);
-            if (result != null) {
-                FileTools.writeFile(result, ta.getText());
-            }
-        }
-    }
-
-    // 新建功能
-    @FXML
-    void onNewMenu(ActionEvent event) {
-
-        // 新建前保存
-        saveadvance();
-
-        ta.clear();
-        result = null;
-    }
-
-    // 打开功能
-    @FXML
-    void onOpenMenu(ActionEvent event) {
-
-        // 打开前保存
-        saveadvance();
-
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        result = fileChooser.showOpenDialog(null);
-        if (result != null) {
-            ta.setText(FileTools.readFile(result));
-        }
-    }
 
     // 保存功能
     @FXML
-    void onSaveMenu(ActionEvent event) throws IOException {
+    void onSaveMenu(ActionEvent event) {
         if (result != null)// 如果已经存在保存路径
         {
             FileTools.writeFile(result, ta.getText());
@@ -168,6 +101,31 @@ public class NoteBookController {
             result = fileChooser.showSaveDialog(null);
             if (result != null) {
                 FileTools.writeFile(result, ta.getText());
+            }
+        }
+    }
+
+    // 返回主界面
+    @FXML
+    void back(ActionEvent event) {
+        if (originalText.equals(ta.getText())) {
+            Stage stage = (Stage) ta.getScene().getWindow();
+            stage.close();
+        } else {
+            var dialog = new VDialog<Integer>();
+            dialog.setText("内容已被修改，是否要保存呢Owo?");
+            dialog.setButtons(Arrays.asList(
+                    new VDialogButton<>("好，朕已阅(ಡωಡ)", 1),
+                    new VDialogButton<>("下次一定_(•̀ω•́ 」∠)_", 2)
+            ));
+            var result = dialog.showAndWait();
+            if (result.isPresent()) {
+                if (result.equals(Optional.of(1))) {
+                    // 执行凯哥修改文件内容的方法
+                    SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功");
+                }
+                Stage stage = (Stage) ta.getScene().getWindow();
+                stage.close();
             }
         }
     }
@@ -246,7 +204,7 @@ public class NoteBookController {
 
     // 替换功能
     @FXML
-    void onReplaceMenu(ActionEvent event) throws IOException {
+    void onReplaceMenu(ActionEvent event) {
         HBox h1 = new HBox();
         h1.setPadding(new Insets(20, 5, 10, 8));
         h1.setSpacing(5);
@@ -297,9 +255,7 @@ public class NoteBookController {
                         ta.selectRange(startIndex, startIndex + tf1.getText().length());
                         startIndex += tf1.getText().length();
                     }
-                    btn2.setOnAction((ActionEvent e2) -> {
-                        ta.replaceSelection(tf2.getText());
-                    });
+                    btn2.setOnAction((ActionEvent e2) -> ta.replaceSelection(tf2.getText()));
                 }
                 if (!textString.contains(tfString)) {
                     Alert alert1 = new Alert(AlertType.WARNING);
@@ -320,37 +276,7 @@ public class NoteBookController {
     // 自动换行
     @FXML
     void onWrapMenu(ActionEvent event) {
-        if (WrapMenu.isSelected())
-            ta.setWrapText(true);
-        else
-            ta.setWrapText(false);
+        ta.setWrapText(WrapMenu.isSelected());
     }
-
-    // 字体
-    @FXML
-    void onTypefaceMenu(ActionEvent event) throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Typeface.fxml"));
-        Parent parent = loader.load();
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        // 等待窗口被关闭在做出下一步反应
-        stage.showAndWait();
-        if (scene.getUserData() != null)// 如果用户有设定字体的样式,则将记事本中的字体改为该样式
-        {
-            Font font = (Font) scene.getUserData();
-            ta.setFont(font);
-        }
-    }
-
-    // 状态栏
-    @FXML
-    void onStateMenu(ActionEvent event) {
-        if (StateMenu.isSelected())
-            label.setVisible(true);
-        else
-            label.setVisible(false);
-    }
-
 }
 

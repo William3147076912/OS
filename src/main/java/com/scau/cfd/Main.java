@@ -1,143 +1,169 @@
 package com.scau.cfd;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
+/**
+ * 这个类是：
+ * @author: William
+ * @date: 2024-11-02T18:01:13CST 18:01
+ * @description:
+ */
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-/**
- * 主类，负责初始化磁盘和处理用户命令。
- */
-public class Main {
-    public static Disk disk;
-    byte[] buffer1;
-    byte[] buffer2;
+class FileSystem {
+    private static final int DISK_SIZE = 128;  // 128 blocks
+    private static final int BLOCK_SIZE = 64;   // 64 bytes per block
+    private int[] fat;                           // File Allocation Table
+    private List<DirectoryEntry> rootDirectory; // Root directory
+    private int usedBlocks;
 
-    /**
-     * 主方法，程序入口。
-     *
-     * @param args 命令行参数
-     * @throws IOException 如果发生 I/O 错误
-     */
-    public static void main(String[] args) throws IOException {
-        // 初始化磁盘
-        disk = new Disk(new File("Disk"));
-        // 打印磁盘容量
-        // System.out.printf(String.valueOf(disk.getVolume()));
-        // 格式化磁盘
-        // disk.format();
+    public FileSystem() {
+        fat = new int[DISK_SIZE];
+        rootDirectory = new ArrayList<>();
+        usedBlocks = 0;
 
-        // 开机默认当前目录为主目录
-        System.out.println("开机默认当前目录为主目录");
-        Catalog man = new Catalog("/");
-        man.parent = 2;
-        man.location = 2;
-        man.attribute = 0x0B;
-        CatalogManage.currentCatalog = man;
-
-        // 进入命令循环
-        while (true) {
-            boolean exit = false;
-            Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
-            String[] command = input.split(" ");
-
-            // 处理退出命令
-            if (Objects.equals(command[0], "exit")) break;
-
-            // 命令处理
-            switch (command[0]) {
-                case "md":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少目录名");
-                        break;
-                    }
-                    if (!CatalogManage.MakeDir(command[1])) {
-                        System.out.println("错误：创建目录失败");
-                    }
-                    break;
-                case "dir":
-                    CatalogManage.ShowDir();
-                    break;
-                case "rd":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少目录名");
-                        break;
-                    }
-                    if (!CatalogManage.RemoveDir(command[1])) {
-                        System.out.println("错误：删除目录失败");
-                    }
-                    break;
-                case "cd":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少目录名");
-                        break;
-                    }
-                    CatalogManage.ChangeDirectory(command[1]);
-                    break;
-                // 文件操作
-                case "cf":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少文件名");
-                        break;
-                    }
-                    if (!FileManage.CreateFile(command[1], (byte) 0x04)) {
-                        System.out.println("错误：创建文件失败");
-                    }
-                    break;
-                case "of":
-                    // 打开文件的命令，暂未实现
-                    break;
-                case "df":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少文件名");
-                        break;
-                    }
-                    if (!FileManage.DeleteFile(command[1])) {
-                        System.out.println("错误：删除文件失败");
-                    }
-                    break;
-                case "tf":
-                    if (command.length < 2) {
-                        System.out.println("error");
-                        break;
-                    }
-                    String s;
-                    if ((s = FileManage.TypeFile(command[1])) == null) {
-                        System.out.println("错误：显示文件内容失败");
-                    } else {
-                        System.out.println(s);
-                    }
-                    break;
-                case "wf":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少文件名");
-                        break;
-                    }
-                    if (!FileManage.WriteFile(command[1])) {
-                        System.out.println("错误：写文件失败");
-                    }
-                    break;
-                case "format":
-                    disk.format();
-                    break;
-                case "ch":
-                    if (command.length < 2) {
-                        System.out.println("错误：缺少文件名");
-                        break;
-                    }
-                    if (!FileManage.Change(command[1])) {
-                        System.out.println("错误：写文件失败");
-                    }
-                    break;
-                case "exit":
-                    exit = true;
-                default:
-                    System.out.println("未知命令");
-            }
-            if (exit) break;
-            // 打印当前目录路径
-            System.out.println(CatalogManage.absolutePath);
+        // Initialize FAT
+        for (int i = 0; i < DISK_SIZE; i++) {
+            fat[i] = 0; // 0 means free
         }
     }
+
+    public static void main(String[] args) {
+        FileSystem fs = new FileSystem();
+        Scanner scanner = new Scanner(System.in);
+        String command;
+
+        while (true) {
+            System.out.print("Enter command (create/read/delete/list/exit): ");
+            command = scanner.nextLine().toLowerCase();
+
+            switch (command) {
+                case "create":
+                    System.out.print("Enter file name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter file attribute: ");
+                    String attribute = scanner.nextLine();
+                    fs.createFile(name, attribute);
+                    break;
+                case "read":
+                    System.out.print("Enter file name: ");
+                    name = scanner.nextLine();
+                    fs.readFile(name);
+                    break;
+                case "delete":
+                    System.out.print("Enter file name: ");
+                    name = scanner.nextLine();
+                    fs.deleteFile(name);
+                    break;
+                case "list":
+                    fs.displayFiles();
+                    break;
+                case "exit":
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Unknown command.");
+            }
+        }
+    }
+
+    public void createFile(String name, String attribute) {
+        // Check for existing file
+        for (DirectoryEntry entry : rootDirectory) {
+            if (entry.getName().equals(name)) {
+                System.out.println("File already exists.");
+                return;
+            }
+        }
+
+        int startBlock = allocateBlock();
+        if (startBlock == -1) {
+            System.out.println("No space available.");
+            return;
+        }
+
+        DirectoryEntry newFile = new DirectoryEntry(name, attribute, startBlock, 0);
+        rootDirectory.add(newFile);
+        System.out.println("File created: " + name);
+    }
+
+    public void readFile(String name) {
+        for (DirectoryEntry entry : rootDirectory) {
+            if (entry.getName().equals(name)) {
+                System.out.println("Reading file: " + name);
+                // Simulate reading file content
+                return;
+            }
+        }
+        System.out.println("File not found.");
+    }
+
+    public void deleteFile(String name) {
+        DirectoryEntry toRemove = null;
+        for (DirectoryEntry entry : rootDirectory) {
+            if (entry.getName().equals(name)) {
+                toRemove = entry;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            rootDirectory.remove(toRemove);
+            freeBlock(toRemove.getStartBlock());
+            System.out.println("File deleted: " + name);
+        } else {
+            System.out.println("File not found.");
+        }
+    }
+
+    private int allocateBlock() {
+        for (int i = 1; i < DISK_SIZE; i++) { // Start from 1 to skip FAT
+            if (fat[i] == 0) {
+                fat[i] = -1; // Mark as allocated
+                usedBlocks++;
+                return i;
+            }
+        }
+        return -1; // No free block found
+    }
+
+    private void freeBlock(int blockNumber) {
+        fat[blockNumber] = 0; // Mark as free
+        usedBlocks--;
+    }
+
+    public void displayFiles() {
+        if (rootDirectory.isEmpty()) {
+            System.out.println("No files in root directory.");
+        } else {
+            System.out.println("Files in root directory:");
+            for (DirectoryEntry entry : rootDirectory) {
+                System.out.println("- " + entry.getName());
+            }
+        }
+    }
+}
+
+class DirectoryEntry {
+    private String name;
+    private String attribute;
+    private int startBlock;
+    private int length;
+
+    public DirectoryEntry(String name, String attribute, int startBlock, int length) {
+        this.name = name;
+        this.attribute = attribute;
+        this.startBlock = startBlock;
+        this.length = length;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getStartBlock() {
+        return startBlock;
+    }
+
+    // Add other getters as needed
 }

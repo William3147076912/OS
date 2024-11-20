@@ -1,4 +1,4 @@
-package com.scau.cfd;
+package com.scau.cfd.manage;
 
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.io.RandomAccessFile;
  * Disk 类表示一个磁盘，提供磁盘的初始化、格式化和查找空闲块的功能。
  */
 public class Disk {
-    File file; // 磁盘文件
+    public File file; // 磁盘文件
     @Getter
     private long volume; // 磁盘容量
 

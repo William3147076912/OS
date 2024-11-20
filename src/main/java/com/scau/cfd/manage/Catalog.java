@@ -1,6 +1,7 @@
-package com.scau.cfd;
+package com.scau.cfd.manage;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.nio.charset.StandardCharsets;
 
@@ -8,12 +9,13 @@ import java.nio.charset.StandardCharsets;
  * Catalog 类表示一个目录结构，包含目录名称、属性、位置和父目录等属性。
  * 提供了多个构造函数来创建目录对象，支持不同参数的初始化。
  */
+@Data
 @AllArgsConstructor
 public class Catalog {
-    byte[] name = new byte[3]; // 目录名称，初始化为长度为3的字节数组
-    byte attribute;             // 目录属性
-    byte location;              // 目录位置
-    byte parent;                // 父目录
+    public byte[] name = new byte[3]; // 目录名称，初始化为长度为3的字节数组
+    public byte attribute;             // 目录属性
+    public byte location;              // 目录位置
+    public byte parent;                // 父目录
 
     public Catalog(String name, int attribute, int location) {
         this.name = name.getBytes();

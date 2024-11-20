@@ -1,17 +1,12 @@
 package com.scau.cfd.utils;
 
-import com.scau.cfd.controller.MainController;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.Objects;
 
 /**
  * 这个类是：给组件设置悬浮添加提示的

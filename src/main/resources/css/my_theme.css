@@ -56,14 +56,6 @@
 }
 
 
-.text-area:hover {
-    -fx-border-color: #0078d4;
-}
-
-.text-area:disabled {
-    -fx-opacity: 0.5;
-}
-
 .btn1 {
     -fx-border-radius: 15;
     -fx-background-radius: 15;
@@ -119,4 +111,37 @@
     -fx-icon-size: 25;
     -fx-icon-color: white;
     -fx-icon-code: "anto-close-circle";
+}
+
+/* 设置TextArea整体样式 */
+.text-area {
+    -fx-background-color: #1B2022; /* TextArea的背景色 */
+    -fx-text-fill: #ffffff; /* 文字颜色为白色 */
+    -fx-border-color: #555555; /* 边框颜色 */
+    -fx-border-radius: 5px; /* 圆角边框 */
+    -fx-font-size: 14px; /* 字体大小 */
+    -fx-padding: 10px; /* 内边距 */
+}
+
+/* 设置TextArea输入区域的背景色和文字颜色 */
+.text-area .content {
+    -fx-background-color: #24292E; /* 输入区域背景色 */
+    -fx-text-fill: #ffffff; /* 输入文字颜色 */
+}
+
+/* 设置TextArea焦点时的样式 */
+.text-area:focused {
+    -fx-border-color: #3c8bff; /* 焦点时的边框颜色 */
+    -fx-background-color: #444444; /* 焦点时的背景色 */
+}
+
+
+#notebook {
+    -fx-background-color: #1B2022; /* TextArea的背景色 */
+}
+
+/* 设置TextArea输入区域的背景色和文字颜色 */
+.text-area .content {
+    -fx-background-color: #444444; /* 输入区域背景色 */
+    -fx-text-fill: #ffffff; /* 输入文字颜色 */
 }

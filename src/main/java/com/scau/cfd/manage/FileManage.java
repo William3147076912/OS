@@ -1,11 +1,9 @@
-package com.scau.cfd;
+package com.scau.cfd.manage;
 
-import javafx.scene.control.SplitMenuButton;
+import com.scau.cfd.app.Main;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Field;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +34,7 @@ public class FileManage {
      * @return 如果文件创建成功返回 true，否则返回 false
      * @throws IOException 如果发生 I/O 错误
      */
-    public static boolean CreateFile(String filename, byte fileAttribute) throws IOException {
+    public static boolean CreateFile(String filename, String fileType, byte fileAttribute) throws IOException {
         boolean finded = false;
         byte[] item = new byte[3];
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
@@ -63,12 +61,13 @@ public class FileManage {
                 son.number = Main.disk.findEmpty();
                 file.seek(son.number);
                 file.write(255);
-                file.seek(son.number * 64);
+                file.seek(son.number * 64L);
                 file.write('#');
                 son.attribute = fileAttribute;
-                son.type = new byte[]{'A', 'A'};
+                son.type = fileType.getBytes();
+                // son.type = new byte[]{'A', 'A'};
                 son.length = 1;
-//注意：此时文件类型默认为“AA”，文件长度默认为1，文件属性默认为0x04
+// 注意：此时文件类型默认为“AA”，文件长度默认为1，文件属性默认为0x04
 
 //               填写文件项
                 file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
@@ -94,9 +93,9 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
                 for (OpenedFile openedFile : openedFileArrayList) {
                     if (openedFile.pathAndFilename.equals(currentFile)) {
@@ -128,7 +127,7 @@ public class FileManage {
      * @return 如果读取成功返回 true，否则返回 false
      * @throws IOException 如果发生 I/O 错误
      */
-    public static boolean ReadFile(String filename, int length) throws IOException {
+    public static boolean ReadFile(String filename) throws IOException {
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         byte[] item = new byte[8];
         byte[] buffer = new byte[0];
@@ -137,14 +136,14 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x08) == 0x08) {
                     System.out.println("failed, it's not a file,it's a directory");
                     file.close();
                     return false;
                 }
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 // 检查文件是否已打开
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (!isOpened(currentFile)) {
@@ -189,14 +188,14 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x04) != 0x04) {
                     System.out.println("failed, it's not a file or it's a system file");
                     file.close();
                     return false;
                 }
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 // 检查文件是否已打开
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (!isOpened(currentFile)) {
@@ -230,7 +229,7 @@ public class FileManage {
                 System.out.println("newContent:" + newContent);
                 int initBlockNum = item[7];
                 int blockNum = newContent.length() / 64 + 1;
-                //修改文件项长度
+                // 修改文件项长度
                 item[7] = (byte) blockNum;
                 file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
                 file.write(item[7]);
@@ -293,14 +292,14 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x04) != 0x04) {
                     System.out.println("failed, it's not a file or it's a system file");
                     file.close();
                     return false;
                 }
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 // 检查文件是否已打开
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (isOpened(currentFile)) {
@@ -331,20 +330,21 @@ public class FileManage {
         return false;
     }
 
+    // 返回文件内容
     public static String TypeFile(String filename) throws IOException {
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
         byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x04) != 0x04) {
                     System.out.println("failed, it's not a file");
                     file.close();
                     return null;
                 }
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (isOpened(currentFile)) {
                     System.out.println("打开则不能显示文件内容");
@@ -386,14 +386,14 @@ public class FileManage {
         for (int i = 0; i < 8; i++) {
             file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
-            //首先判断当前目录下是否有该文件
+            // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x04) != 0x04) {
                     System.out.println("failed, it's not a file");
                     file.close();
                     return false;
                 }
-                //然后判断已打开文件列表中是否有已有该文件
+                // 然后判断已打开文件列表中是否有已有该文件
                 String currentFile = CatalogManage.absolutePath + filename;
                 if (isOpened(currentFile)) {
                     System.out.println("打开则不能改变属性");

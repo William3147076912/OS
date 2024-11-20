@@ -1,7 +1,9 @@
-package com.scau.cfd.william_test;
+package com.scau.cfd.app;
 
-import com.scau.cfd.controller.ContentController;
-import com.scau.cfd.controller.MainTestController;
+import com.scau.cfd.controller.MainController;
+import com.scau.cfd.manage.Catalog;
+import com.scau.cfd.manage.CatalogManage;
+import com.scau.cfd.manage.Disk;
 import com.scau.cfd.utils.ImageUtils;
 import io.vproxy.vfx.theme.Theme;
 import io.vproxy.vfx.ui.button.FusionImageButton;
@@ -24,6 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 /**
  * 这个类是：
  *
@@ -31,8 +35,11 @@ import javafx.stage.Stage;
  * @date: 2024-10-07T21:01:44CST 21:01
  * @description:
  */
-public class Test extends Application {
+public class Main extends Application {
     public static VStage stage;
+    public static Disk disk;
+    byte[] buffer1;
+    byte[] buffer2;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,21 +47,38 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // 初始化磁盘
+        disk = new Disk(new File("Disk"));
+        // 打印磁盘容量
+        // System.out.printf(String.valueOf(disk.getVolume()));
+        // 格式化磁盘
+        // disk.format();
+
+        // 开机默认当前目录为主目录
+        System.out.println("开机默认当前目录为主目录");
+        Catalog man = new Catalog("/");
+        man.setParent((byte) 2);
+        man.setLocation((byte) 2);
+        // man.attribute = 0x0B;
+        CatalogManage.currentCatalog = man;
+        //--------------------------------------
+
         stage = new VStage(primaryStage);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main_test.fxml"));
         AnchorPane root = fxmlLoader.load();
-        addMainScene(stage, root);
-        addQuestionScene(stage);
+        addMainScene(root);
+
+        addQuestionScene();
         stage.setTitle("Test");
         stage.getStage().setWidth(1200);
         stage.getStage().setHeight(1000);
         stage.show();
     }
 
-    void addMainScene(VStage stage, AnchorPane root) {
+    private void addMainScene(AnchorPane root) {
         // 由于tableview是自定义类，没继承control类，所以不能借助fxml初始化，只能自己手动初始化
-        root.getChildren().add(MainTestController.getTableView().getNode());
-        root.getChildren().add(MainTestController.getControlPane().getNode());
+        root.getChildren().add(MainController.getTableView().getNode());
+        root.getChildren().add(MainController.getControlPane().getNode());
         stage.getSceneGroup().addScene(new VScene(VSceneRole.MAIN) {{
             getContentPane().getChildren().add(root);
         }});
@@ -62,12 +86,12 @@ public class Test extends Application {
             getContentPane().getChildren().add(root);
         }};
         stage.getInitialScene().getContentPane().getChildren().add(scene.getNode());
-        stage.getRootSceneGroup().addScene(ContentController.getContentScene(), VSceneHideMethod.FADE_OUT);
+        // stage.getRootSceneGroup().addScene(ContentController.getContentScene(), VSceneHideMethod.FADE_OUT);
         stage.getInitialScene().enableAutoContentWidthHeight();
         FXUtils.observeWidthHeightCenter(stage.getInitialScene().getContentPane(), scene.getNode());
     }
 
-    void addQuestionScene(VStage stage) {
+    private void addQuestionScene() {
         var questionScene = new VScene(VSceneRole.DRAWER_VERTICAL);
         questionScene.getNode().setPrefWidth(550);
         questionScene.enableAutoContentWidth();
@@ -116,4 +140,6 @@ public class Test extends Application {
         questionBtn.setOnAction(e -> stage.getRootSceneGroup().show(questionScene, VSceneShowMethod.FROM_LEFT));
         stage.getRoot().getContentPane().getChildren().add(questionBtn);
     }
+
+
 }

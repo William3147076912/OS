@@ -1,4 +1,4 @@
-package com.scau.cfd;
+package com.scau.cfd.manage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

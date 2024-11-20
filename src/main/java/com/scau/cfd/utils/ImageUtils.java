@@ -19,6 +19,8 @@ public class ImageUtils {
     private static final Image questionImage = new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/question.png")).toExternalForm());
     private static final int DIR_IMAGE_SIZE = 5;
     private static final Image[] dirImage = new Image[DIR_IMAGE_SIZE];
+    @Getter
+    private static final ImageView backImage = new ImageView(new Image(Objects.requireNonNull(ImageUtils.class.getResource("/images/back.png")).toExternalForm(), 40, 40, true, true));
 
     static {
         for (int i = 0; i < DIR_IMAGE_SIZE; i++) {
