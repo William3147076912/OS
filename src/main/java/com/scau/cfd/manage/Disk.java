@@ -29,6 +29,15 @@ public class Disk {
         }
     }
 
+    public static void main(String[] args) {
+        // 初始化磁盘
+        var disk = new Disk(new File("Disk"));
+        // 打印磁盘容量
+        // System.out.printf(String.valueOf(disk.getVolume()));
+        // 格式化磁盘
+        disk.format();
+    }
+
     /**
      * 设置磁盘容量并初始化磁盘内容。
      *

@@ -90,8 +90,12 @@ public class FileController {
     @FXML
     void save(MouseEvent event) {
         // 检验文件名和文件类型合法性
-        if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidName(typeFIeld.getText())) {
+        if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidType(typeFIeld.getText())) {
             SimpleAlert.show(Alert.AlertType.ERROR, "文件名或文件类型不合法，请重新输入(´▽`ʃ♡ƪ)");
+            return;
+        }
+        if (StringUtils.isNameExists(nameField.getText(), OurFile.class)) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "文件名已存在，请重新输入(´▽`ʃ♡ƪ)");
             return;
         }
         byte sum = 0;
@@ -110,6 +114,8 @@ public class FileController {
             try {
                 FileManage.CreateFile(nameField.getText(), typeFIeld.getText(), sum);
                 MainController.refreshTable();
+                SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "创建成功～(∠・ω< )⌒☆");
+                cancel(event);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -121,7 +127,6 @@ public class FileController {
             file.setName(nameField.getText());
             file.setType(typeFIeld.getText());
             file.setAttribute(sum);
-            System.out.println("修改了文件");
             MainController.getTableView().getItems().add(index, file);
             cancel(event);
         } else {

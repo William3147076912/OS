@@ -1,5 +1,8 @@
 package com.scau.cfd.utils;
 
+import com.scau.cfd.controller.MainController;
+import com.scau.cfd.manage.Catalog;
+import com.scau.cfd.manage.OurFile;
 import io.vproxy.vfx.ui.loading.LoadingItem;
 
 import java.time.format.DateTimeFormatter;
@@ -30,10 +33,29 @@ public class StringUtils {
     }
 
     public static boolean isValidName(String name) {
-        String regex = "^[a-zA-Z0-9\\s!@#%&*()_+-={};:'\"|,<>?\\[\\]\\\\]{1,2}$";
+        String regex = "^[a-zA-Z0-9\\s!@#%&*()_+-={};:'\"|,<>?\\[\\]\\\\]{3}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(name);
         return matcher.matches();
+    }
+
+    public static boolean isValidType(String type) {
+        String regex = "^[a-zA-Z0-9\\s!@#%&*()_+-={};:'\"|,<>?\\[\\]\\\\]{2}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(type);
+        return matcher.matches();
+    }
+
+    public static boolean isNameExists(String name, Class<?> clazz) {
+        for (Object item : MainController.getTableView().getItems()) {
+            if (clazz.isInstance(item)) {
+                String itemName = clazz.cast(item) instanceof OurFile ? ((OurFile) item).getName() : ((Catalog) item).getName();
+                if (itemName.equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static String randomString(int lenMin, int lenMax) {

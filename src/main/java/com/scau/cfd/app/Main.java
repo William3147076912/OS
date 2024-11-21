@@ -64,7 +64,7 @@ public class Main extends Application {
         //--------------------------------------
 
         stage = new VStage(primaryStage);
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main_test.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         AnchorPane root = fxmlLoader.load();
         addMainScene(root);
 

@@ -10,6 +10,8 @@ import java.util.HashMap;
  */
 public class ConstantSet {
     public static final int ROW_HEIGHT = 100;
+    public static final int FILE_NAME_LEN = 2;
+    public static final int CATALOG_NAME_LEN = 3;
     public static final int TABLE_HEAD_HEIGHT = 30;
     public static final int CATEGORY = 8;
     public static final int FILE = 4;

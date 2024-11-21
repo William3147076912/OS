@@ -1,6 +1,7 @@
 package com.scau.cfd.controller;
 
-import com.scau.cfd.utils.FileTools;
+import com.scau.cfd.manage.FileManage;
+import com.scau.cfd.manage.OurFile;
 import io.vproxy.vfx.control.dialog.VDialog;
 import io.vproxy.vfx.control.dialog.VDialogButton;
 import io.vproxy.vfx.ui.alert.SimpleAlert;
@@ -18,7 +19,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -90,18 +90,14 @@ public class NoteBookController {
     // 保存功能
     @FXML
     void onSaveMenu(ActionEvent event) {
-        if (result != null)// 如果已经存在保存路径
-        {
-            FileTools.writeFile(result, ta.getText());
-        } else// 如果不存在保存的路径
-        {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extFilter);
-            result = fileChooser.showSaveDialog(null);
-            if (result != null) {
-                FileTools.writeFile(result, ta.getText());
-            }
+        if (originalText.equals(ta.getText())) return;
+        try {
+            // 执行凯哥修改文件内容的方法
+            OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
+            FileManage.WriteFileForGUI(selectedItem.getName(), ta.getText());
+            SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功～(∠・ω< )⌒☆");
+        } catch (IOException e) {
+            SimpleAlert.showAndWait(Alert.AlertType.ERROR, "保存失败，请联系作者(´இ皿இ｀)");
         }
     }
 
@@ -121,8 +117,14 @@ public class NoteBookController {
             var result = dialog.showAndWait();
             if (result.isPresent()) {
                 if (result.equals(Optional.of(1))) {
-                    // 执行凯哥修改文件内容的方法
-                    SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功");
+                    try {
+                        // 执行凯哥修改文件内容的方法
+                        OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
+                        FileManage.WriteFileForGUI(selectedItem.getName(), ta.getText());
+                        SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功～(∠・ω< )⌒☆");
+                    } catch (IOException e) {
+                        SimpleAlert.showAndWait(Alert.AlertType.ERROR, "保存失败，请联系作者(´இ皿இ｀)");
+                    }
                 }
                 Stage stage = (Stage) ta.getScene().getWindow();
                 stage.close();

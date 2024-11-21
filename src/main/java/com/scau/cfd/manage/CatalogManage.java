@@ -195,12 +195,32 @@ public class CatalogManage {
             file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item);
             if (item[0] == '$') continue;
-            if ((item[5] & 0x04) == 0x04)// 目录
+            if ((item[5] & 0x04) == 0x04)// 文件
             {
-                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 2), StandardCharsets.US_ASCII), item[5], currentCatalog.location * 64 + i * 8));
-            } else if ((item[5] & 0x04) != 0x04)// 文件
+                allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
+            } else if ((item[5] & 0x04) != 0x04)// 目录
             {
-                allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 2), Arrays.copyOfRange(item, 3, 4), item[5], item[6], item[7]));
+                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], currentCatalog.location * 64 + i * 8));
+            }
+        }
+        file.close();
+        return allItem;
+    }
+
+    public static ArrayList<Object> ReturnAllItemInCurrent(Catalog catalog) throws IOException {
+        ArrayList<Object> allItem = new ArrayList<>();
+        byte[] item = new byte[8];
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
+        for (int i = 0; i < 8; i++) {
+            file.seek(catalog.location * 64 + i * 8);
+            file.read(item);
+            if (item[0] == '$') continue;
+            if ((item[5] & 0x04) == 0x04)// 文件
+            {
+                allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
+            } else if ((item[5] & 0x04) != 0x04)// 目录
+            {
+                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], catalog.location * 64 + i * 8));
             }
         }
         file.close();

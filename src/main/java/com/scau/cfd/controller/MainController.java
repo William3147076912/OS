@@ -45,6 +45,7 @@ import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -96,17 +97,6 @@ public class MainController {
         return tableView;
     }
 
-    public static boolean isNameExists(String name, Class<?> clazz) {
-        for (Object item : MainController.getTableView().getItems()) {
-            if (clazz.isInstance(item)) {
-                String itemName = clazz.cast(item) instanceof OurFile ? ((OurFile) item).getName() : ((Catalog) item).getName();
-                if (itemName.equals(name)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public static void refreshTable() {
         try {
@@ -123,6 +113,7 @@ public class MainController {
         try {
             if (!CatalogManage.absolutePath.get().equals("/")) {
                 CatalogManage.ChangeDirectory("..");
+                refreshTable();
             } else {
                 SimpleAlert.show(Alert.AlertType.ERROR, "当前目录为根目录，无法返回");
             }
@@ -193,7 +184,7 @@ public class MainController {
                     if (textField.getText().isEmpty()) {
                         SimpleAlert.show(Alert.AlertType.ERROR, "名称不能为空(￣△￣；)");
                         textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
-                    } else if (isNameExists(textField.getText(), data.getClass())) {
+                    } else if (StringUtils.isNameExists(textField.getText(), data.getClass())) {
                         SimpleAlert.show(Alert.AlertType.ERROR, "名称已存在(눈‸눈)");
                         textField.setText(data instanceof OurFile ? ((OurFile) data).getName() : ((Catalog) data).getName());
                     } else if (!StringUtils.isValidName(textField.getText())) {
@@ -234,17 +225,17 @@ public class MainController {
 
         typeColumn.setPrefWidth(150);
         typeColumn.setComparator(String::compareToIgnoreCase);
-        VTableColumn<Object, Integer> lengthColumn = new VTableColumn<>("大小", new ThemeLabel("大小") {{
+        VTableColumn<Object, String> lengthColumn = new VTableColumn<>("大小", new ThemeLabel("大小") {{
             setPrefHeight(50);
         }}, data -> {
-            if (data instanceof OurFile) {
-                return Integer.parseInt(((OurFile) data).getLength());
-            } else {
-                return 0;
-            }
+            if (data instanceof OurFile ourFile) {
+                return ourFile.getLength() + "盘块";
+            } else if (data instanceof Catalog catalog) {
+                return String.valueOf(getCatalogLen(catalog));
+            } else return "";
         });
         lengthColumn.setPrefWidth(150);
-        lengthColumn.setComparator(Integer::compareTo);
+        lengthColumn.setComparator(String::compareTo);
         tableView.getColumns().addAll(iconColumn, nameColumn, attributeColumn, typeColumn, lengthColumn);
         // 创建右键菜单
         ContextMenu fileContextMenu = new ContextMenu();
@@ -347,6 +338,7 @@ public class MainController {
         //         new OurFile("wi", "233", ConstantSet.FILE + ConstantSet.READ_ONLY_FILE, 23, 444)
         // );
         List<Object> data = CatalogManage.ReturnAllItemInCurrent();
+        System.out.println(data);
         tableView.getItems().addAll(data);
 
 
@@ -429,8 +421,8 @@ public class MainController {
             // 获取控制器实例
             NoteBookController noteBookController = fxmlLoader.getController();
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
-            noteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
-            noteBookController.setOriginalText(noteBookController.getTa().getText());
+            NoteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
+            noteBookController.setOriginalText(NoteBookController.getTa().getText());
             // 获取 TextArea 组件并设置内容
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -492,7 +484,9 @@ public class MainController {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem instanceof Catalog catalog) {
             try {
+                System.out.println(catalog.getName());
                 CatalogManage.ChangeDirectory(catalog.getName());
+                refreshTable();
             } catch (IOException e) {
                 SimpleAlert.show(Alert.AlertType.ERROR, "无法进入该目录，请联系作者(　ﾟ皿ﾟ)");
             }
@@ -507,23 +501,32 @@ public class MainController {
             SimpleAlert.show(Alert.AlertType.ERROR, "最多只能创建8个目录项，请删除后再试！(≧∇≦)ﾉ");
             return;
         }
-        String dirName = StringUtils.randomString(2);
-        tableView.getItems().add(new Catalog(dirName, ConstantSet.CATEGORY, 0));
         try {
+            String dirName = StringUtils.randomString(ConstantSet.CATALOG_NAME_LEN);
             CatalogManage.MakeDir(dirName);
+            tableView.getItems().add(new Catalog(dirName, ConstantSet.CATEGORY, 0));
         } catch (IOException e) {
             SimpleAlert.show(Alert.AlertType.ERROR, "无法创建目录，请联系作者(　ﾟ皿ﾟ)");
         }
     }
 
-    // 处理进入下一目录
-    private void handleDirAction(Event event) {
-        Catalog selectedItem = (Catalog) tableView.getSelectedItem();
+    private int getCatalogLen(Catalog catalog) {
+        int len = 0;
         try {
-            CatalogManage.ChangeDirectory(selectedItem.getName());
+            ArrayList<Object> objects = CatalogManage.ReturnAllItemInCurrent(catalog);
+            System.out.println(objects);
+            if (!objects.isEmpty()) {
+                for (Object object : objects) {
+                    if (object instanceof Catalog) {
+                        len += getCatalogLen((Catalog) object);
+                    } else if (object instanceof OurFile) {
+                        len += Integer.parseInt(((OurFile) object).getLength());
+                    } else return 0;
+                }
+            }
         } catch (IOException e) {
-            SimpleAlert.show(Alert.AlertType.ERROR, "无法进入该目录，请联系作者(　ﾟ皿ﾟ)");
+            throw new RuntimeException(e);
         }
+        return len;
     }
-
 }
