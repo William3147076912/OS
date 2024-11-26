@@ -226,4 +226,34 @@ public class CatalogManage {
         file.close();
         return allItem;
     }
+
+    public static boolean ChangeName(String originName, String newName) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[3];
+        for (int i = 0; i < 8; i++) {
+            file.seek(currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 3);
+            if (originName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                file.seek(currentCatalog.location * 64 + i * 8);
+                file.write(newName.getBytes());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean Changeattribute(String dirName, byte attribute) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[3];
+        for (int i = 0; i < 8; i++) {
+            file.seek(currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 3);
+            if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                file.seek(currentCatalog.location * 64 + i * 8 + 5);
+                file.write(attribute);
+                return true;
+            }
+        }
+        return false;
+    }
 }
