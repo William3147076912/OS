@@ -256,4 +256,39 @@ public class CatalogManage {
         }
         return false;
     }
+
+    public static int CatalogSize(String dirName) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[3];
+        for (int i = 0; i < 8; i++) {
+            file.seek(currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 3);
+            if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                byte location = 0;
+                file.read(item, currentCatalog.location * 64 + i * 8 + 6, 1);
+                location = item[0];
+                return Size((int) location * 64);
+            }
+        }
+        return 0;
+    }
+
+    public static int Size(int location) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        byte[] item = new byte[8];
+        int sum = 0;
+        for (int i = 0; i < 8; i++) {
+            file.seek(location + i * 8);
+            file.read(item, 0, 8);
+            if (item[0] != '$') {
+                if ((item[5] & 0x08) == 0x08)//目录
+                {
+                    sum += Size((int) item[6] * 64);
+                } else {
+                    return item[7];
+                }
+            }
+        }
+        return sum;
+    }
 }
