@@ -413,7 +413,7 @@ public class FileManage {
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
-                if ((item[5] & 0x04) != 0x04) {
+                if ((item[5] & 0x08) == 0x08) {
                     System.out.println("failed, it's not a file");
                     file.close();
                     return null;
@@ -455,7 +455,7 @@ public class FileManage {
      * @return 如果修改成功返回 true，否则返回 false
      */
     public static boolean Change(String filename) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
             file.seek(currentCatalog.location * 64 + i * 8);
@@ -463,7 +463,7 @@ public class FileManage {
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
                 if ((item[5] & 0x04) != 0x04) {
-                    System.out.println("failed, it's not a file");
+                    System.out.println("failed, it's not a file that can be changed");
                     file.close();
                     return false;
                 }

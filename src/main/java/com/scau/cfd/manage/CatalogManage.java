@@ -104,7 +104,7 @@ public class CatalogManage {
             file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             if (dirName.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
-                if ((item[5] & 0x04) == 0x04) {
+                if ((item[5] & 0x08) != 0x08) {
                     System.out.println("it's not a catalog");
                     return false;
                 } else if ((item[5] & 0x02) == 0x02) {
@@ -195,10 +195,10 @@ public class CatalogManage {
             file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item);
             if (item[0] == '$') continue;
-            if ((item[5] & 0x04) == 0x04)// 文件
+            if ((item[5] & 0x08) != 0x08)// 文件
             {
                 allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
-            } else if ((item[5] & 0x04) != 0x04)// 目录
+            } else if ((item[5] & 0x08) == 0x08)// 目录
             {
                 allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], currentCatalog.location * 64 + i * 8));
             }
@@ -215,10 +215,10 @@ public class CatalogManage {
             file.seek(catalog.location * 64 + i * 8);
             file.read(item);
             if (item[0] == '$') continue;
-            if ((item[5] & 0x04) == 0x04)// 文件
+            if ((item[5] & 0x08) != 0x08)// 文件
             {
                 allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
-            } else if ((item[5] & 0x04) != 0x04)// 目录
+            } else if ((item[5] & 0x08) == 0x08)// 目录
             {
                 allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], catalog.location * 64 + i * 8));
             }
