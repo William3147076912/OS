@@ -37,13 +37,13 @@ import java.util.Optional;
 
 public class NoteBookController {
 
-    @FXML
-    @Getter
-    private static TextArea ta;
     // 开始搜索的位置
     int startIndex = 0;
     // textarea中光标的位置
     int position = 0;
+    @FXML
+    @Getter
+    private TextArea ta;
     @FXML
     private MenuItem FindMenu;
     @FXML

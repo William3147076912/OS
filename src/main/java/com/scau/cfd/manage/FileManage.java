@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static com.scau.cfd.manage.CatalogManage.currentCatalog;
+
 public class FileManage {
 
     public static ArrayList<OpenedFile> openedFileArrayList = new ArrayList<>();
@@ -41,7 +43,7 @@ public class FileManage {
 
         // 检查当前目录下是否存在同名文件或目录
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item);
             if (filename.equals(new String(item, StandardCharsets.US_ASCII))) {
                 System.out.println("the file or dir with same name has existed");
@@ -51,7 +53,7 @@ public class FileManage {
 
         // 查找空闲目录项
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 3);
             if (item[0] == '$') {
                 finded = true;
@@ -69,7 +71,7 @@ public class FileManage {
 // 注意：此时文件类型默认为“AA”，文件长度默认为1，文件属性默认为0x04
 
 //               填写文件项
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+                file.seek(currentCatalog.location * 64 + i * 8);
                 file.write(son.filename);
                 file.write(son.type);
                 file.write(son.attribute);
@@ -90,7 +92,7 @@ public class FileManage {
 
         // 查找文件
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -133,7 +135,7 @@ public class FileManage {
 
         // 查找文件
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -153,7 +155,7 @@ public class FileManage {
                         return false;
                     }
                 }
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.seek(currentCatalog.location * 64 + i * 8 + 7);
                 byte location = item[6];
                 byte nextblockNum;
                 for (int k = 0; location >= 0; k++) {
@@ -184,7 +186,7 @@ public class FileManage {
 
         // 查找文件
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -204,12 +206,12 @@ public class FileManage {
                         return false;
                     }
                 }
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.seek(currentCatalog.location * 64 + i * 8 + 7);
                 int initBlockNum = item[7];
                 int blockNum = newContent.length() / 64 + 1;
                 // 修改文件项长度
                 item[7] = (byte) blockNum;
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.seek(currentCatalog.location * 64 + i * 8 + 7);
                 file.write(item[7]);
                 byte location = item[6];
                 byte nextblockNum;
@@ -258,7 +260,7 @@ public class FileManage {
 
         // 查找文件
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -278,7 +280,7 @@ public class FileManage {
                         return false;
                     }
                 }
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.seek(currentCatalog.location * 64 + i * 8 + 7);
                 byte location = item[6];
                 byte nextblockNum;
                 for (int k = 0; location > 2; k++) {
@@ -303,7 +305,7 @@ public class FileManage {
                 int blockNum = newContent.length() / 64 + 1;
                 // 修改文件项长度
                 item[7] = (byte) blockNum;
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 7);
+                file.seek(currentCatalog.location * 64 + i * 8 + 7);
                 file.write(item[7]);
                 location = item[6];
                 boolean done = false;
@@ -362,7 +364,7 @@ public class FileManage {
 
         // 查找文件
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -382,7 +384,7 @@ public class FileManage {
 
                 // 删除文件
 //                System.out.println(CatalogManage.currentCatalog.location * 64 + i * 8);
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+                file.seek(currentCatalog.location * 64 + i * 8);
                 file.write((byte) '$');
                 int location = item[6];
                 byte blockNum;
@@ -407,7 +409,7 @@ public class FileManage {
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
         byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -456,7 +458,7 @@ public class FileManage {
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
         byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
-            file.seek(CatalogManage.currentCatalog.location * 64 + i * 8);
+            file.seek(currentCatalog.location * 64 + i * 8);
             file.read(item, 0, 8);
             // 首先判断当前目录下是否有该文件
             if (filename.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
@@ -482,7 +484,7 @@ public class FileManage {
                     return false;
                 }
                 item[5] = (byte) attribute;
-                file.seek(CatalogManage.currentCatalog.location * 64 + i * 8 + 5);
+                file.seek(currentCatalog.location * 64 + i * 8 + 5);
                 file.write(item[5]);
                 file.close();
                 return true;
@@ -490,6 +492,40 @@ public class FileManage {
         }
         file.close();
         System.out.println("could not find the file in current catalog");
+        return false;
+    }
+
+    public static boolean ChangeName(String originName, String newName) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "");
+        byte[] item = new byte[3];
+        for (int i = 0; i < 8; i++) {
+            file.seek(currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 3);
+            if (originName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                file.seek(currentCatalog.location * 64 + i * 8);
+                file.write(newName.getBytes());
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+        return false;
+    }
+
+    public static boolean ChangeAttribute(String fileName, byte attribute) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
+        byte[] item = new byte[3];
+        for (int i = 0; i < 8; i++) {
+            file.seek(currentCatalog.location * 64 + i * 8);
+            file.read(item, 0, 3);
+            if (fileName.equals(new String(item, StandardCharsets.US_ASCII))) {
+                file.seek(currentCatalog.location * 64 + i * 8 + 5);
+                file.write(attribute);
+                file.close();
+                return true;
+            }
+        }
+        file.close();
         return false;
     }
 }

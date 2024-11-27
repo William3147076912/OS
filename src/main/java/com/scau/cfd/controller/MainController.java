@@ -194,7 +194,12 @@ public class MainController {
                         if (data instanceof OurFile) {
                             ((OurFile) data).setName(textField.getText());
                         } else {
-                            ((Catalog) data).setName(textField.getText());
+                            try {
+                                CatalogManage.ChangeName(((Catalog) data).getName(), textField.getText());
+                                ((Catalog) data).setName(textField.getText());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                 }
@@ -231,7 +236,11 @@ public class MainController {
             if (data instanceof OurFile ourFile) {
                 return ourFile.getLength() + "盘块";
             } else if (data instanceof Catalog catalog) {
-                return String.valueOf(getCatalogLen(catalog));
+                try {
+                    return String.valueOf(CatalogManage.CatalogSize(catalog.getName())) + "盘块";
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else return "";
         });
         lengthColumn.setPrefWidth(150);
@@ -421,8 +430,8 @@ public class MainController {
             // 获取控制器实例
             NoteBookController noteBookController = fxmlLoader.getController();
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
-            NoteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
-            noteBookController.setOriginalText(NoteBookController.getTa().getText());
+            noteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
+            noteBookController.setOriginalText(noteBookController.getTa().getText());
             // 获取 TextArea 组件并设置内容
         } catch (IOException ex) {
             throw new RuntimeException(ex);

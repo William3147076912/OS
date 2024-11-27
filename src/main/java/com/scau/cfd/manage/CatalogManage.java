@@ -228,7 +228,7 @@ public class CatalogManage {
     }
 
     public static boolean ChangeName(String originName, String newName) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         byte[] item = new byte[3];
         for (int i = 0; i < 8; i++) {
             file.seek(currentCatalog.location * 64 + i * 8);
@@ -236,40 +236,26 @@ public class CatalogManage {
             if (originName.equals(new String(item, StandardCharsets.US_ASCII))) {
                 file.seek(currentCatalog.location * 64 + i * 8);
                 file.write(newName.getBytes());
+                file.close();
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean Changeattribute(String dirName, byte attribute) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
-        byte[] item = new byte[3];
-        for (int i = 0; i < 8; i++) {
-            file.seek(currentCatalog.location * 64 + i * 8);
-            file.read(item, 0, 3);
-            if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
-                file.seek(currentCatalog.location * 64 + i * 8 + 5);
-                file.write(attribute);
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static int CatalogSize(String dirName) throws IOException {
         RandomAccessFile file = new RandomAccessFile(Main.disk.file, "r");
-        byte[] item = new byte[3];
+        byte[] item = new byte[8];
         for (int i = 0; i < 8; i++) {
             file.seek(currentCatalog.location * 64 + i * 8);
-            file.read(item, 0, 3);
-            if (dirName.equals(new String(item, StandardCharsets.US_ASCII))) {
-                byte location = 0;
-                file.read(item, currentCatalog.location * 64 + i * 8 + 6, 1);
-                location = item[0];
-                return Size((int) location * 64);
+            file.read(item, 0, 8);
+            if (dirName.equals(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII))) {
+                file.close();
+                return Size((int) item[6] * 64);
             }
         }
+        file.close();
         return 0;
     }
 
@@ -281,7 +267,7 @@ public class CatalogManage {
             file.seek(location + i * 8);
             file.read(item, 0, 8);
             if (item[0] != '$') {
-                if ((item[5] & 0x08) == 0x08)//目录
+                if ((item[5] & 0x08) == 0x08)// 目录
                 {
                     sum += Size((int) item[6] * 64);
                 } else {
@@ -289,6 +275,7 @@ public class CatalogManage {
                 }
             }
         }
+        file.close();
         return sum;
     }
 }

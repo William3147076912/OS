@@ -122,12 +122,19 @@ public class FileController {
             // MainTestController.getTableView().getItems().add(new OurFile(nameField.getText(), typeFIeld.getText(), sum, 0, 0));
         } else if (newOrModify == 1) {
             var file = (OurFile) MainController.getTableView().getSelectedItem();
-            int index = MainController.getTableView().getItems().indexOf(file);
-            MainController.getTableView().getItems().remove(file);
-            file.setName(nameField.getText());
-            file.setType(typeFIeld.getText());
-            file.setAttribute(sum);
-            MainController.getTableView().getItems().add(index, file);
+            // int index = MainController.getTableView().getItems().indexOf(file);
+            // MainController.getTableView().getItems().remove(file);
+            // MainController.getTableView().getItems().add(index, file);
+            try {
+                // FileManage.DeleteFile(file.getName());
+                // FileManage.CreateFile(nameField.getText(), typeFIeld.getText(), sum);
+                FileManage.ChangeAttribute(file.getName(), sum);
+                FileManage.ChangeName(file.getName(), nameField.getText());
+                MainController.refreshTable();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "修改成功～(∠・ω< )⌒☆");
             cancel(event);
         } else {
             SimpleAlert.show(Alert.AlertType.ERROR, "newOrModify的值有误,请联系作者w(ﾟДﾟ)w");
