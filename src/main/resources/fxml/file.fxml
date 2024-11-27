@@ -15,7 +15,7 @@
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="603.0" prefWidth="595.0" style="-fx-background-color: rgb(23, 27, 30);-fx-effect: dropshadow(gaussian, black, 50, 0, 0, 0);   -fx-background-insets: 50;" stylesheets="@../css/my_theme.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.scau.cfd.controller.FileController">
     <children>
         <RXTextField fx:id="nameField" layoutX="218.0" layoutY="174.0" onClickButton="#deleteText" prefHeight="34.0" prefWidth="169.0" promptText="请输入文件名" styleClass="text-field" />
-        <RXTextField fx:id="typeFIeld" layoutX="218.0" layoutY="254.0" onClickButton="#deleteText" prefHeight="34.0" prefWidth="169.0" promptText="请输入文件类型名" styleClass="text-field" />
+        <RXTextField fx:id="typeField" layoutX="218.0" layoutY="254.0" onClickButton="#deleteText" prefHeight="34.0" prefWidth="169.0" promptText="请输入文件类型名" styleClass="text-field" />
         <RXAvatar fx:id="image" arcHeight="50.0" arcWidth="50.0" layoutX="241.0" layoutY="-1.0" onMouseClicked="#setImage" prefHeight="130.0" prefWidth="122.0" shapeType="HEXAGON_V">
             <image>
                 <Image url="@../images/康纳酱.gif" />

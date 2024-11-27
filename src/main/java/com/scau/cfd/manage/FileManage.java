@@ -496,7 +496,7 @@ public class FileManage {
     }
 
     public static boolean ChangeName(String originName, String newName) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "");
+        RandomAccessFile file = new RandomAccessFile(Main.disk.file, "rw");
         byte[] item = new byte[3];
         for (int i = 0; i < 8; i++) {
             file.seek(currentCatalog.location * 64 + i * 8);

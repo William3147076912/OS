@@ -60,6 +60,11 @@ public class NoteBookController {
 
     // 灰度控制
     public void initialize() {
+        var file = (OurFile) MainController.getTableView().getSelectedItem();
+        if (file.getAttribute() % 2 != 0) {
+            // 如果是只读文件，不允许用户编辑
+            ta.setEditable(false);
+        }
         // 初始状态下不可使用查找与替换功能
         FindMenu.setDisable(true);
         ReplaceMenu.setDisable(true);
@@ -96,6 +101,7 @@ public class NoteBookController {
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
             FileManage.WriteFileForGUI(selectedItem.getName(), ta.getText());
             SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功～(∠・ω< )⌒☆");
+            originalText = ta.getText();
         } catch (IOException e) {
             SimpleAlert.showAndWait(Alert.AlertType.ERROR, "保存失败，请联系作者(´இ皿இ｀)");
         }

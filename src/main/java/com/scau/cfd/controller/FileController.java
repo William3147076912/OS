@@ -52,7 +52,7 @@ public class FileController {
     @FXML
     private RXLineButton save;
     @FXML
-    private RXTextField typeFIeld;
+    private RXTextField typeField;
 
     @FXML
     void deleteText(RXActionEvent event) {// 文本框删除功能
@@ -90,12 +90,8 @@ public class FileController {
     @FXML
     void save(MouseEvent event) {
         // 检验文件名和文件类型合法性
-        if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidType(typeFIeld.getText())) {
-            SimpleAlert.show(Alert.AlertType.ERROR, "文件名或文件类型不合法，请重新输入(´▽`ʃ♡ƪ)");
-            return;
-        }
-        if (StringUtils.isNameExists(nameField.getText(), OurFile.class)) {
-            SimpleAlert.show(Alert.AlertType.ERROR, "文件名已存在，请重新输入(´▽`ʃ♡ƪ)");
+        if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidType(typeField.getText())) {
+            SimpleAlert.show(Alert.AlertType.ERROR, "文件名或文件类型不合法，请重新输入(　ﾟ皿ﾟ)");
             return;
         }
         byte sum = 0;
@@ -103,7 +99,7 @@ public class FileController {
         if (r1.isSelected()) sum += ConstantSet.SYSTEM_FILE;
         if (r2.isSelected()) sum += ConstantSet.READ_ONLY_FILE;
         if (sum >= ConstantSet.FILE + ConstantSet.SYSTEM_FILE) {
-            SimpleAlert.show(Alert.AlertType.ERROR, "文件类型不能同时为系统文件和只读文件，请重新选择(´▽`ʃ♡ƪ)");
+            SimpleAlert.show(Alert.AlertType.ERROR, "文件类型不能同时为系统文件和普通文件，请重新选择_(•̀ω•́ 」∠)_");
             return;
         }
         if (newOrModify == 0) {
@@ -112,7 +108,7 @@ public class FileController {
                 return;
             }
             try {
-                FileManage.CreateFile(nameField.getText(), typeFIeld.getText(), sum);
+                FileManage.CreateFile(nameField.getText(), typeField.getText(), sum);
                 MainController.refreshTable();
                 SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "创建成功～(∠・ω< )⌒☆");
                 cancel(event);
@@ -126,16 +122,25 @@ public class FileController {
             // MainController.getTableView().getItems().remove(file);
             // MainController.getTableView().getItems().add(index, file);
             try {
-                // FileManage.DeleteFile(file.getName());
-                // FileManage.CreateFile(nameField.getText(), typeFIeld.getText(), sum);
-                FileManage.ChangeAttribute(file.getName(), sum);
-                FileManage.ChangeName(file.getName(), nameField.getText());
-                MainController.refreshTable();
+                boolean isModified = false;
+                if (file.getAttribute() != sum) {
+                    FileManage.ChangeAttribute(file.getName(), sum);
+                    isModified = true;
+                }
+                if (!file.getName().equals(nameField.getText())) {
+                    FileManage.ChangeName(file.getName(), nameField.getText());
+                    isModified = true;
+                }
+                if (isModified) {
+                    MainController.refreshTable();
+                    SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "修改成功～(∠・ω< )⌒☆");
+                    cancel(event);
+                } else {
+                    SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "没有修改，请勿重复操作(　ﾟ皿ﾟ)");
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "修改成功～(∠・ω< )⌒☆");
-            cancel(event);
         } else {
             SimpleAlert.show(Alert.AlertType.ERROR, "newOrModify的值有误,请联系作者w(ﾟДﾟ)w");
         }
@@ -148,7 +153,7 @@ public class FileController {
     }
 
     public void initialize() {
-
+        typeField.setDisable(newOrModify != 0);
         // 初始化按钮和Label，给每个Label添加图标
         l0.setGraphic(new FontIcon());
         l1.setGraphic(new FontIcon());
@@ -161,12 +166,12 @@ public class FileController {
         r2.setSelected(false);
         if (newOrModify == 0) {
             nameField.setText("");
-            typeFIeld.setText("");
+            typeField.setText("");
             r0.setSelected(true);
 
         } else if (newOrModify == 1) {
             nameField.setText(((OurFile) MainController.getTableView().getSelectedItem()).getName());
-            typeFIeld.setText(((OurFile) MainController.getTableView().getSelectedItem()).getType());
+            typeField.setText(((OurFile) MainController.getTableView().getSelectedItem()).getType());
             OurFile ourFile = (OurFile) MainController.getTableView().getSelectedItem();
 
             switch (ourFile.getAttribute()) {

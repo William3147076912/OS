@@ -114,7 +114,7 @@ public class Main extends Application {
             setWrapText(true);
             setFont(Font.font(25));
         }};
-        var tableContent = new ThemeLabel("1. 右键表格中的行，可以弹出操作菜单。\n" + "2. 也可以点击表格中的行，然后在菜单栏操作。\n" + "3. 鼠标悬浮在名称列可以便捷修改目录项名称\n" + "4. 点击表格中的列名，可以对表格进行相应排序展示。\n") {{
+        var tableContent = new ThemeLabel("1. 右键表格中的行，可以弹出操作菜单。\n" + "2. 也可以选中表格中的行，然后在菜单栏操作。\n" + "3. 鼠标悬浮在名称列可以便捷修改目录项名称\n" + "4. 点击表格中的列名，可以对表格进行相应排序展示。\n") {{
             setWrapText(true);
             setFont(Font.font(20));
         }};
@@ -122,7 +122,7 @@ public class Main extends Application {
             setWrapText(true);
             setFont(Font.font(25));
         }};
-        var fileContent = new ThemeLabel("1. 合法目录，文件名与文件类型名仅可以使用字母、数字和\n除“$”、“.”、“/”以外 的字符。\n" + "2. 由于存储空间关系，名称只能有两个字符。\n" + "3. 由于存储空间关系，一个目录只能有最多八个目录项。\n") {{
+        var fileContent = new ThemeLabel("1. 合法目录，文件名与文件类型名仅可以使用字母、数字和\n除“$”、“.”、“/”以外 的字符。\n" + "2. 由于存储空间关系，目录名称只能有三个字符，文件名称\n只能有两个字符。\n" + "3. 由于存储空间关系，一个目录只能有最多八个目录项。\n") {{
             setWrapText(true);
             setFont(Font.font(20));
         }};

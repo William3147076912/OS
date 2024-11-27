@@ -271,7 +271,7 @@ public class CatalogManage {
                 {
                     sum += Size((int) item[6] * 64);
                 } else {
-                    return item[7];
+                    sum += item[7];
                 }
             }
         }
