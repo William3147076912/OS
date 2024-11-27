@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -75,7 +76,7 @@ public class NoteBookController {
 
         // 对textarea的内容是否改变进行监听
         ta.textProperty().addListener((observable, oldValue, newValue) -> {
-            // 如果textarea中内容部位空,则可以使用查找与替换
+            // 如果textarea中内容不为空,则可以使用查找与替换
             if (ta.getLength() > 0) {
                 FindMenu.setDisable(false);
                 ReplaceMenu.setDisable(false);
@@ -89,13 +90,23 @@ public class NoteBookController {
             // 光标位置
             position = ta.getCaretPosition();
         });
+        // 注册按键事件处理器
+        ta.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.S) {
+                onSaveMenu(null); // 调用保存方法
+                event.consume(); // 阻止事件传播
+            }
+        });
     }
 
 
     // 保存功能
     @FXML
     void onSaveMenu(ActionEvent event) {
-        if (originalText.equals(ta.getText())) return;
+        if (originalText.equals(ta.getText())) {
+            SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "内容未修改，无需保存～(∠・ω< )⌒☆");
+            return;
+        }
         try {
             // 执行凯哥修改文件内容的方法
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();

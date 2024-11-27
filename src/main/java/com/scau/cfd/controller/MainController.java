@@ -10,6 +10,8 @@ import com.scau.cfd.utils.ImageUtils;
 import com.scau.cfd.utils.PopupScene;
 import com.scau.cfd.utils.StringUtils;
 import com.scau.cfd.utils.TooltipUtil;
+import io.vproxy.vfx.control.dialog.VDialog;
+import io.vproxy.vfx.control.dialog.VDialogButton;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.manager.font.FontUsages;
 import io.vproxy.vfx.ui.alert.SimpleAlert;
@@ -46,9 +48,11 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 主控制器类，用于管理主界面的逻辑。
@@ -237,7 +241,7 @@ public class MainController {
                 return ourFile.getLength() + "盘块";
             } else if (data instanceof Catalog catalog) {
                 try {
-                    return String.valueOf(CatalogManage.CatalogSize(catalog.getName())) + "盘块";
+                    return CatalogManage.CatalogSize(catalog.getName()) + "盘块";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -282,7 +286,6 @@ public class MainController {
         // 设置表格点击事件
         tableView.getNode().setOnMouseClicked(event -> {
             double y = event.getY();
-            // System.out.println(y);
             if (y > ROW_HEIGHT * (tableView.getItems().size() + 1)) {
                 // 点击的是空白行
                 name.setText("");
@@ -465,27 +468,42 @@ public class MainController {
     private void handleDeleteAction(Event actionEvent) {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem != null) {
-            if (selectedItem instanceof Catalog catalog) {
-                try {
-                    if (CatalogManage.RemoveDir(catalog.getName())) {
-                        tableView.getItems().remove(catalog);
-                    } else {
-                        SimpleAlert.show(Alert.AlertType.ERROR, "该目录下存在文件，无法删除！(╯‵□′)╯︵┻━┻");
+            var dialog = new VDialog<Integer>();
+            dialog.setText("是否真的要删除Owo?");
+            dialog.setButtons(Arrays.asList(
+                    new VDialogButton<>("当然（￣︶￣）↗", 1),
+                    new VDialogButton<>("不了(´。＿。｀)", 2)
+            ));
+            var result = dialog.showAndWait();
+            if (result.isPresent()) {
+                if (result.equals(Optional.of(1))) {
+                    if (selectedItem instanceof Catalog catalog) {
+                        try {
+                            if (CatalogManage.RemoveDir(catalog.getName())) {
+                                tableView.getItems().remove(catalog);
+                                SimpleAlert.show(Alert.AlertType.INFORMATION, "删除成功～(∠・ω< )⌒☆");
+                            } else {
+                                SimpleAlert.show(Alert.AlertType.ERROR, "该目录下存在文件，无法删除！(╯‵□′)╯︵┻━┻");
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (selectedItem instanceof OurFile ourFile) {
+                        try {
+                            if (FileManage.DeleteFile(ourFile.getName())) {
+                                tableView.getItems().remove(ourFile);
+                                SimpleAlert.show(Alert.AlertType.INFORMATION, "删除成功～(∠・ω< )⌒☆");
+                            } else {
+                                SimpleAlert.show(Alert.AlertType.ERROR, "文件删除失败！(￣▽￣)╭可能是系统文件");
+                            }
+                        } catch (IOException e) {
+                            SimpleAlert.show(Alert.AlertType.ERROR, "无法删除，请联系作者(　ﾟ皿ﾟ)");
+                        }
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if (selectedItem instanceof OurFile ourFile) {
-                try {
-                    if (FileManage.DeleteFile(ourFile.getName())) {
-                        tableView.getItems().remove(ourFile);
-                    } else {
-                        SimpleAlert.show(Alert.AlertType.ERROR, "文件删除失败！(￣▽￣)╭可能是系统文件");
-                    }
-                } catch (IOException e) {
-                    SimpleAlert.show(Alert.AlertType.ERROR, "无法删除，请联系作者(　ﾟ皿ﾟ)");
                 }
             }
+
+
         }
     }
 
@@ -493,7 +511,6 @@ public class MainController {
         Object selectedItem = tableView.getSelectedItem();
         if (selectedItem instanceof Catalog catalog) {
             try {
-                System.out.println(catalog.getName());
                 CatalogManage.ChangeDirectory(catalog.getName());
                 refreshTable();
             } catch (IOException e) {
@@ -523,7 +540,6 @@ public class MainController {
         int len = 0;
         try {
             ArrayList<Object> objects = CatalogManage.ReturnAllItemInCurrent(catalog);
-            System.out.println(objects);
             if (!objects.isEmpty()) {
                 for (Object object : objects) {
                     if (object instanceof Catalog) {
