@@ -114,7 +114,12 @@ public class Main extends Application {
             setWrapText(true);
             setFont(Font.font(25));
         }};
-        var tableContent = new ThemeLabel("1. 右键表格中的行，可以弹出操作菜单。\n" + "2. 也可以选中表格中的行，然后在菜单栏操作。\n" + "3. 鼠标悬浮在名称列可以便捷修改目录项名称\n" + "4. 点击表格中的列名，可以对表格进行相应排序展示。\n") {{
+        var tableContent = new ThemeLabel("""
+                1. 右键表格中的行，可以弹出操作菜单。
+                2. 也可以选中表格中的行，然后在菜单栏操作。
+                3. 鼠标悬浮在名称列可以便捷修改目录项名称。
+                4. 点击表格中的列名，可以对表格进行相应排序展示。
+                """) {{
             setWrapText(true);
             setFont(Font.font(20));
         }};
@@ -122,11 +127,28 @@ public class Main extends Application {
             setWrapText(true);
             setFont(Font.font(25));
         }};
-        var fileContent = new ThemeLabel("1. 合法目录，文件名与文件类型名仅可以使用字母、数字和\n除“$”、“.”、“/”以外 的字符。\n" + "2. 由于存储空间关系，目录名称只能有三个字符，文件名称\n只能有两个字符。\n" + "3. 由于存储空间关系，一个目录只能有最多八个目录项。\n") {{
+        var fileContent = new ThemeLabel("""
+                1. 合法目录，文件名与文件类型名仅可以使用字母、数字和
+                除“$”、“.”、“/”以外 的字符。
+                2. 由于存储空间关系，目录名称只能有三个字符，文件名称
+                只能有两个字符。
+                3. 由于存储空间关系，一个目录只能有最多八个目录项。
+                """) {{
             setWrapText(true);
             setFont(Font.font(20));
         }};
-        questionBox.getChildren().addAll(inTro, new VPadding(100), tableHeader, new VPadding(30), tableContent, new VPadding(100), fileHeader, new VPadding(20), fileContent);
+        var shortcutHeader = new ThemeLabel("快捷键") {{
+            setWrapText(true);
+            setFont(Font.font(25));
+        }};
+        var shortcutContent = new ThemeLabel("""
+                1. ‘双击’目录名进入该目录，‘双击’文件编辑文件内容。
+                2. 编辑文件内容时，‘Esc’退出，‘Ctrl+S’保存。
+                """) {{
+            setWrapText(true);
+            setFont(Font.font(20));
+        }};
+        questionBox.getChildren().addAll(inTro, new VPadding(100), shortcutHeader, new VPadding(30), shortcutContent, new VPadding(100), tableHeader, new VPadding(30), tableContent, new VPadding(100), fileHeader, new VPadding(20), fileContent);
         FXUtils.observeHeightCenter(questionScene.getContentPane(), questionBox);
 
 

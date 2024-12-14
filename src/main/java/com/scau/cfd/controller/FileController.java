@@ -88,7 +88,7 @@ public class FileController {
     }
 
     @FXML
-    void save(MouseEvent event) {
+    void save() {
         // 检验文件名和文件类型合法性
         if (!StringUtils.isValidName(nameField.getText()) || !StringUtils.isValidType(typeField.getText())) {
             SimpleAlert.show(Alert.AlertType.ERROR, "文件名或文件类型不合法，请重新输入(　ﾟ皿ﾟ)");
@@ -111,7 +111,7 @@ public class FileController {
                 FileManage.CreateFile(nameField.getText(), typeField.getText(), sum);
                 MainController.refreshTable();
                 SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "创建成功～(∠・ω< )⌒☆");
-                cancel(event);
+                cancel();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -134,7 +134,7 @@ public class FileController {
                 if (isModified) {
                     MainController.refreshTable();
                     SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "修改成功～(∠・ω< )⌒☆");
-                    cancel(event);
+                    cancel();
                 } else {
                     SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "没有修改，请勿重复操作(　ﾟ皿ﾟ)");
                 }
@@ -147,7 +147,7 @@ public class FileController {
     }
 
     @FXML
-    void cancel(MouseEvent event) {
+    void cancel() {
         Stage stage = (Stage) pane.getScene().getWindow();
         stage.close();
     }

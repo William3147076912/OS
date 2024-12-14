@@ -35,7 +35,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -113,7 +112,7 @@ public class MainController {
     }
 
     @FXML
-    void goBack(MouseEvent event) {
+    void goBack() {
         try {
             if (!CatalogManage.absolutePath.get().equals("/")) {
                 CatalogManage.ChangeDirectory("..");
@@ -434,6 +433,8 @@ public class MainController {
             NoteBookController noteBookController = fxmlLoader.getController();
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
             noteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
+            // 设置光标位置
+            noteBookController.getTa().positionCaret(noteBookController.getTa().getLength());
             noteBookController.setOriginalText(noteBookController.getTa().getText());
             // 获取 TextArea 组件并设置内容
         } catch (IOException ex) {

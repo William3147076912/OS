@@ -70,7 +70,7 @@ public final class PopupScene {
 
     // 实现界面缓慢出现和消失
     public static void fadeTransition(Scene scene) {
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1.5), scene.getRoot());
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.25), scene.getRoot());
         fadeTransition.setFromValue(0.0); // 透明度从 0 开始
         fadeTransition.setToValue(1.0);   // 透明度渐变到 1
         fadeTransition.setCycleCount(1);   // 播放一次

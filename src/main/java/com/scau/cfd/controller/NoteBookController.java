@@ -40,8 +40,6 @@ public class NoteBookController {
 
     // 开始搜索的位置
     int startIndex = 0;
-    // textarea中光标的位置
-    int position = 0;
     @FXML
     @Getter
     private TextArea ta;
@@ -57,7 +55,6 @@ public class NoteBookController {
     private MenuItem Undo;
     @Setter
     private String originalText;
-    private File result;
 
     // 灰度控制
     public void initialize() {
@@ -87,13 +84,14 @@ public class NoteBookController {
             }
             Redo.setDisable(false);
             Undo.setDisable(false);
-            // 光标位置
-            position = ta.getCaretPosition();
         });
         // 注册按键事件处理器
         ta.setOnKeyPressed(event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.S) {
-                onSaveMenu(null); // 调用保存方法
+                onSaveMenu(); // 调用保存方法
+                event.consume(); // 阻止事件传播
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                back(); // 调用返回主界面的方法
                 event.consume(); // 阻止事件传播
             }
         });
@@ -102,7 +100,7 @@ public class NoteBookController {
 
     // 保存功能
     @FXML
-    void onSaveMenu(ActionEvent event) {
+    void onSaveMenu() {
         if (originalText.equals(ta.getText())) {
             SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "内容未修改，无需保存～(∠・ω< )⌒☆");
             return;
@@ -120,7 +118,7 @@ public class NoteBookController {
 
     // 返回主界面
     @FXML
-    void back(ActionEvent event) {
+    void back() {
         if (originalText.equals(ta.getText())) {
             Stage stage = (Stage) ta.getScene().getWindow();
             stage.close();
@@ -151,21 +149,21 @@ public class NoteBookController {
 
     // 撤销
     @FXML
-    void onUndoMenu(ActionEvent event) {
+    void onUndoMenu() {
         ta.undo();
         Undo.setDisable(true);
     }
 
     // 重做
     @FXML
-    void onRedoMenu(ActionEvent event) {
+    void onRedoMenu() {
         ta.redo();
         Redo.setDisable(true);
     }
 
     // 查找功能
     @FXML
-    void onFindMenu(ActionEvent event) throws IOException {
+    void onFindMenu() {
         HBox h1 = new HBox();
         h1.setPadding(new Insets(20, 5, 20, 5));
         h1.setSpacing(5);
@@ -223,7 +221,7 @@ public class NoteBookController {
 
     // 替换功能
     @FXML
-    void onReplaceMenu(ActionEvent event) {
+    void onReplaceMenu() {
         HBox h1 = new HBox();
         h1.setPadding(new Insets(20, 5, 10, 8));
         h1.setSpacing(5);
@@ -294,7 +292,7 @@ public class NoteBookController {
 
     // 自动换行
     @FXML
-    void onWrapMenu(ActionEvent event) {
+    void onWrapMenu() {
         ta.setWrapText(WrapMenu.isSelected());
     }
 }
