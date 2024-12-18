@@ -69,7 +69,7 @@ public class Main extends Application {
         addMainScene(root);
 
         addQuestionScene();
-        stage.setTitle("Test");
+        stage.setTitle("Simulated Disk File System Implementation");
         stage.getStage().setWidth(1200);
         stage.getStage().setHeight(1000);
         stage.show();
@@ -130,8 +130,8 @@ public class Main extends Application {
         var fileContent = new ThemeLabel("""
                 1. 合法目录，文件名与文件类型名仅可以使用字母、数字和
                 除“$”、“.”、“/”以外 的字符。
-                2. 由于存储空间关系，目录名称只能有三个字符，文件名称
-                只能有两个字符。
+                2. 由于存储空间关系，目录项名称只能有三个字符，文件类
+                型名只能有两个字符。
                 3. 由于存储空间关系，一个目录只能有最多八个目录项。
                 """) {{
             setWrapText(true);

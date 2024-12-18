@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.fcjd.William</groupId>
-    <artifactId>untitled</artifactId>
+    <artifactId>simulated_disk_file_system_implementation</artifactId>
     <version>1.0-SNAPSHOT</version>
     <repositories>
         <repository>
@@ -154,6 +154,44 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--<plugin>-->
+            <!--    <groupId>com.github.akman</groupId>-->
+            <!--    <artifactId>jpackage-maven-plugin</artifactId>-->
+            <!--    <executions>-->
+            <!--        <execution>-->
+            <!--            <id>jpackage-installer</id>-->
+            <!--            <phase>verify</phase>-->
+            <!--            <goals>-->
+            <!--                <goal>jpackage</goal>-->
+            <!--            </goals>-->
+            <!--        </execution>-->
+            <!--    </executions>-->
+            <!--</plugin>-->
         </plugins>
+
+        <!--<pluginManagement>-->
+        <!--    <plugins>-->
+        <!--        <plugin>-->
+        <!--            <groupId>com.github.akman</groupId>-->
+        <!--            <artifactId>jpackage-maven-plugin</artifactId>-->
+        <!--            <version>0.1.5</version>-->
+        <!--            <configuration>-->
+        <!--                <toolhome>${env.JPACKAGE_HOME}</toolhome>-->
+        <!--                <dest>${project.build.directory}/jpackage</dest>-->
+        <!--                <appversion>1.0</appversion>-->
+        <!--                <modulepath>-->
+        <!--                    <dependencysets>-->
+        <!--                        <dependencyset>-->
+        <!--                            <includeoutput>true</includeoutput>-->
+        <!--                            <excludeautomatic>true</excludeautomatic>-->
+        <!--                        </dependencyset>-->
+        <!--                    </dependencysets>-->
+        <!--                </modulepath>-->
+        <!--                <module>com.scau.cfd.app.App</module>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+
+        <!--    </plugins>-->
+        <!--</pluginManagement>-->
     </build>
 </project>

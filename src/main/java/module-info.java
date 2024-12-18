@@ -5,7 +5,7 @@
  * @date: 2024-10-05T16:05:28CST 16:05
  * @description:
  */
-module untitled {
+module simulated.disk.file.system.implementation {
     requires org.kordamp.ikonli.core;
     requires javafx.fxml;
     requires static lombok;

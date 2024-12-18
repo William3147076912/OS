@@ -200,7 +200,7 @@ public class CatalogManage {
                 allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
             } else if ((item[5] & 0x08) == 0x08)// 目录
             {
-                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], currentCatalog.location * 64 + i * 8));
+                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], item[6]));
             }
         }
         file.close();
@@ -220,7 +220,7 @@ public class CatalogManage {
                 allItem.add(new OurFile(Arrays.copyOfRange(item, 0, 3), Arrays.copyOfRange(item, 3, 5), item[5], item[6], item[7]));
             } else if ((item[5] & 0x08) == 0x08)// 目录
             {
-                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], catalog.location * 64 + i * 8));
+                allItem.add(new Catalog(new String(Arrays.copyOfRange(item, 0, 3), StandardCharsets.US_ASCII), item[5], item[6]));
             }
         }
         file.close();
