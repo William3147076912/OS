@@ -1,0 +1,5 @@
+com.scau.cfd.utils.MyIconsHandler
+org.kordamp.ikonli.antdesignicons.AntDesignIconsFilledIkonHandler
+org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlinedIkonHandler
+org.kordamp.ikonli.IkonliIkonResolver
+org.kordamp.ikonli.ionicons.IoniconsIkonHandler

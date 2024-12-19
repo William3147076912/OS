@@ -60,8 +60,8 @@ public class NoteBookController {
         // 设置文本域的换行方式为自动换行
         ta.setWrapText(true);
         var file = (OurFile) MainController.getTableView().getSelectedItem();
-        if (file.getAttribute() % 2 != 0) {
-            // 如果是只读文件，不允许用户编辑
+        if (file.getAttribute() < 4) {
+            // 如果是只读文件or系统文件，不允许用户编辑
             ta.setEditable(false);
         }
         // 初始状态下不可使用查找与替换功能

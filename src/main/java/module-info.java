@@ -1,3 +1,5 @@
+import com.scau.cfd.utils.MyIconsHandler;
+
 /**
  * 这个类是：
  *
@@ -19,6 +21,7 @@ module simulated.disk.file.system.implementation {
     requires org.jetbrains.annotations;
     requires guice;
     requires io.vproxy.base;
+    provides org.kordamp.ikonli.IkonHandler with MyIconsHandler;
     opens com.scau.cfd.controller to javafx.fxml;
     exports com.scau.cfd.app to javafx.graphics;
     exports com.scau.cfd.manage;

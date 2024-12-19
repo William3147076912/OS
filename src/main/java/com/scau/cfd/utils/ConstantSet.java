@@ -9,6 +9,12 @@ import java.util.HashMap;
  * @description:
  */
 public class ConstantSet {
+    // 图标字体名字
+    public static final String FONT_NAME = "MyIcons";
+    // 图标字体前缀
+    public static final String FONT_PREFIX = "MyIcons-";
+    // 图标字体路径
+    public static final String FONT_PATH = "/fonts/MyIcons.ttf";
     public static final int ROW_HEIGHT = 100;
     public static final int FILE_NAME_LEN = 2;
     public static final int CATALOG_NAME_LEN = 3;

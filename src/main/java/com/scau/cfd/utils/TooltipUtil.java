@@ -20,8 +20,9 @@ public class TooltipUtil {
     public static void insertTooltip(Control control, String text) {
         Tooltip tooltip = new Tooltip(/* "o(=•ェ•=)m：" + */ text);
         tooltip.setFont(new Font(20));
-        tooltip.setGraphic(new FontIcon(Ionicons.ION_SOCIAL_OCTOCAT) {{
-            setIconColor(new Color(1, 1, 1, 1));
+        tooltip.setGraphic(new FontIcon(MyIcons.Help) {{
+            setIconSize(30);
+            setIconColor(Color.WHITE);
         }});
         control.setTooltip(tooltip);
         if (control instanceof Label) {
