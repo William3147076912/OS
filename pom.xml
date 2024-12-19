@@ -3,7 +3,10 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
     <groupId>com.fcjd.William</groupId>
     <artifactId>simulated_disk_file_system_implementation</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -116,82 +119,39 @@
         <!--    <version>1.3.4</version>-->
         <!--</dependency>-->
     </dependencies>
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <build>
+        <finalName>simulated_disk_file_system_implementation</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
-                <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <executions>
-                    <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
-                        <configuration>
-                            <mainClass>com.scau.cfd.TestApp
-                            </mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <!--<plugin>-->
-            <!--    <groupId>com.github.akman</groupId>-->
-            <!--    <artifactId>jpackage-maven-plugin</artifactId>-->
+            <!--    <groupId>org.apache.maven.plugins</groupId>-->
+            <!--    <artifactId>maven-shade-plugin</artifactId>-->
+            <!--    <version>1.4</version>-->
+            <!--    <configuration>-->
+            <!--        <createDependencyReducedPom>true</createDependencyReducedPom>-->
+            <!--    </configuration>-->
             <!--    <executions>-->
             <!--        <execution>-->
-            <!--            <id>jpackage-installer</id>-->
-            <!--            <phase>verify</phase>-->
+            <!--            <phase>package</phase>-->
             <!--            <goals>-->
-            <!--                <goal>jpackage</goal>-->
+            <!--                <goal>shade</goal>-->
             <!--            </goals>-->
+            <!--            <configuration>-->
+            <!--                <transformers>-->
+            <!--                    <transformer-->
+            <!--                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+            <!--                        <mainClass>Main.Main</mainClass>-->
+            <!--                    </transformer>-->
+            <!--                </transformers>-->
+            <!--            </configuration>-->
             <!--        </execution>-->
             <!--    </executions>-->
             <!--</plugin>-->
         </plugins>
-
-        <!--<pluginManagement>-->
-        <!--    <plugins>-->
-        <!--        <plugin>-->
-        <!--            <groupId>com.github.akman</groupId>-->
-        <!--            <artifactId>jpackage-maven-plugin</artifactId>-->
-        <!--            <version>0.1.5</version>-->
-        <!--            <configuration>-->
-        <!--                <toolhome>${env.JPACKAGE_HOME}</toolhome>-->
-        <!--                <dest>${project.build.directory}/jpackage</dest>-->
-        <!--                <appversion>1.0</appversion>-->
-        <!--                <modulepath>-->
-        <!--                    <dependencysets>-->
-        <!--                        <dependencyset>-->
-        <!--                            <includeoutput>true</includeoutput>-->
-        <!--                            <excludeautomatic>true</excludeautomatic>-->
-        <!--                        </dependencyset>-->
-        <!--                    </dependencysets>-->
-        <!--                </modulepath>-->
-        <!--                <module>com.scau.cfd.app.App</module>-->
-        <!--            </configuration>-->
-        <!--        </plugin>-->
-
-        <!--    </plugins>-->
-        <!--</pluginManagement>-->
     </build>
 </project>

@@ -222,12 +222,18 @@ public class FileManage {
                     file.write(newContent.substring(64 * k, (newContent.length() - 64 * k) > 64 ? 64 * (k + 1) : newContent.length()).getBytes());
                     if ((newContent.length() - 64 * k) <= 64) {
                         file.write('#');
-                        done = true;
+
                     }
                     file.seek(location);
                     nextblockNum = file.readByte();
-                    if (location > 2)
+                    if (nextblockNum > 2)
                         location = nextblockNum;
+                    else if (k < blockNum) {
+                        // nextblockNum = Main.disk.findEmpty();
+                        // file.seek(location);
+                        // file.writeByte(nextblockNum);
+                        // location = nextblockNum;
+                    }
                 }
                 for (; k < blockNum; k++) {
                     file.seek(location);
@@ -240,12 +246,12 @@ public class FileManage {
                     file.write(newContent.substring(64 * k, (newContent.length() - 64 * k) > 64 ? 64 * (k + 1) : newContent.length()).getBytes());
                     if ((newContent.length() - 64 * k) <= 64) {
                         file.write('#');
-                        done = true;
+
                     }
                 }
                 CloseFile(filename);
                 file.close();
-                return done;
+                return true;
             }
         }
         file.close();

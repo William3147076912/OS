@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
@@ -58,6 +57,8 @@ public class NoteBookController {
 
     // 灰度控制
     public void initialize() {
+        // 设置文本域的换行方式为自动换行
+        ta.setWrapText(true);
         var file = (OurFile) MainController.getTableView().getSelectedItem();
         if (file.getAttribute() % 2 != 0) {
             // 如果是只读文件，不允许用户编辑
@@ -111,6 +112,7 @@ public class NoteBookController {
             FileManage.WriteFileForGUI(selectedItem.getName(), ta.getText());
             SimpleAlert.showAndWait(Alert.AlertType.INFORMATION, "保存成功～(∠・ω< )⌒☆");
             originalText = ta.getText();
+            MainController.refreshTable();
         } catch (IOException e) {
             SimpleAlert.showAndWait(Alert.AlertType.ERROR, "保存失败，请联系作者(´இ皿இ｀)");
         }
