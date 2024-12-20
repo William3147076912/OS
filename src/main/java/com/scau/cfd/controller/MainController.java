@@ -430,28 +430,19 @@ public class MainController {
         Scene scene;
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getResource("/fxml/notebook.fxml"));
-// 加载FXML文件并创建新的场景
             scene = new Scene(fxmlLoader.load());
             PopupScene.fadeTransition(scene);
 
-// 获取控制器实例
             NoteBookController noteBookController = fxmlLoader.getController();
-// 获取表格中选中的项
             OurFile selectedItem = (OurFile) MainController.getTableView().getSelectedItem();
-// 将选中文件的内容设置到文本区域中
             noteBookController.getTa().setText(FileManage.TypeFile(selectedItem.getName()));
-// 设置光标位置
             noteBookController.getTa().positionCaret(noteBookController.getTa().getLength());
-// 保存原始文本
             noteBookController.setOriginalText(noteBookController.getTa().getText());
-// 获取 TextArea 组件并设置内容
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
 
-// 设置场景背景色为透明
         scene.setFill(Color.TRANSPARENT);
-// 创建并显示一个新的舞台
         new Stage() {{
             setScene(scene);
             initStyle(StageStyle.TRANSPARENT); // 窗口透明
